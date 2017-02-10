@@ -2,7 +2,7 @@ default:
   server:
     port: 8100
   mservice:
-    ip: 192.168.10.54
+    ip: 127.0.0.1
 dev:
   server:
     port: 8100
