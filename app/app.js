@@ -16,28 +16,20 @@ import Yaml from 'yaml-config';
 import path from 'path';
 import { argv } from 'optimist';
 
-import { TestRouter } from './router';
+import {TestRouter,LoginRouter,OauthRouter } from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
-import oauthserver from 'koa-oauth-server';
-import model from './model';
+import {oauth,KoaOAuthServer,model} from './koa2-oauth';
+
 
 import log4js from './log4js';
 import co from 'co';
 import render from 'koa-ejs';
 
 
-
-// app.use(async (ctx, next) => {
-//     await ctx.render(view, locals);
-// });
-
 //获取启动配置参数
 global.CONFIG = Yaml.readConfig(path.join(__dirname, 'appliction.yml'), process.env.NODE_ENV);
-console.log(CONFIG);
-console.log(Math.random());
 const app = new Koa();
-// const eurekaConfig = Yaml.readConfig(path.join(__dirname,'eureka-client.yml')); 
 const log = log4js.getLogger('DEBUG');
 
 //获取启动入参 node index.js --ip 127.0.0.1
@@ -54,13 +46,9 @@ if (!argv.ip) {
       }
     });
   }
+  console.log("argv.ip",argv.ip);
 }
 
-
-// class Xddd{
-//   static state="xxx";
-
-// }
 //NODE_ENV dev ,test,production defualt dev
 
 log.debug("NODE_ENV:" + process.env.NODE_ENV);
@@ -88,7 +76,7 @@ app.use(session({
 /**
  * 设置ejs模版
  */
-
+log.debug("设置ejs模版");
 render(app, {
   root: path.join(__dirname, 'template'),
   layout: false,
@@ -101,13 +89,15 @@ app.context.render = co.wrap(app.context.render);
 /**
  * 设置oauth2 
  */
-app.oauth = oauthserver({
-  model: model, // See https://github.com/thomseddon/node-oauth2-server for specification
-  grants: ['password'],
-  debug: true
+log.debug("设置KoaOAuthServer");
+global.oauth = app.oauth = new KoaOAuthServer({
+    scope: true, // Alternatively string with required scopes (see verifyScope)
+    model: model,
+    allowBearerTokensInQueryString: true,
+    accessTokenLifetime: 3600,   // 1 hour
+    refreshTokenLifetime: 604800 // 1 week
 });
 
-app.use(convert(app.oauth.authorise()));
 /**
  * 异常处理
  * 
@@ -118,6 +108,7 @@ app.use(async (ctx, next) => {
   } catch (err) {
     err.status = err.statusCode || err.status || 500;
     // throw err;
+    log.debug(err);
     ctx.body = JSON.stringify({ code: err.status, data: JSON.stringify(err) });
   }
 });
@@ -155,6 +146,9 @@ app.use(koaBody());
 log.debug("设置请求路由");
 
 app.use(TestRouter.routes());
+app.use(LoginRouter.routes());
+app.use(OauthRouter.routes());
+
 /**
  * 默认404请求返回值
  * 
@@ -168,7 +162,7 @@ app.on('error', (err, ctx) => {
   console.error('服务异常：', err, ctx);
 });
 
-app.listen(CONFIG.server.port, () => console.log(`server started ${CONFIG.server.port}`));
+app.listen(CONFIG.server.port, () => log.debug(`server started ${CONFIG.server.port}`));
 
 
 //进程退出事件

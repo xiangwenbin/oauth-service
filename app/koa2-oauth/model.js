@@ -1,22 +1,22 @@
-import Debug from 'debug';
+// import log.debug from 'log.debug';
 
-
-const debug = Debug('model');
-const db    = require('./db');
+import log4js from '../log4js';
+import db  from './db';
+const log = log4js.getLogger('DEBUG');
 var model={};
 // Client lookup - Note that for *authcode* grants, the secret is not provided
 model.getClient = (id, secret) => {
-    debug(`Looking up client ${id}:${secret}`);
+    log.debug(`Looking up client ${id}:${secret}`);
 
-    const lookupMethod = typeof secret === 'undefined'
+    const lookupMethod = typeof secret === 'undefined'|| secret==null
         ? (client) => { return client.id === id; }
         : (client) => { return client.id === id && client.secret === secret };
-
+    // console.log("clients",db.clients);
     return db.clients.find(lookupMethod);
 };
 
 model.getUser = (username, password) => {
-    debug(`Looking up user ${username}:${password}`);
+    log.debug(`Looking up user ${username}:${password}`);
 
     return db.users.find((user) => {
         return user.username === username && user.password === password;
@@ -26,13 +26,13 @@ model.getUser = (username, password) => {
 // In the client credentials grant flow, the client itself needs to be related
 // with some form of user representation
 model.getUserFromClient = (client) => {
-    debug(`Looking up user for client ${client.name}`);
+    log.debug(`Looking up user for client ${client.name}`);
     return { name: client.name, isClient: true };
 };
 
 // Performs a lookup on the provided string and returns a token object
 model.getAccessToken = (accessToken) => {
-    debug(`Get access token ${accessToken}`);
+    log.debug(`Get access token ${accessToken}`);
 
     const token = db.tokens.find((token) => {
         return token.accessToken === accessToken;
@@ -54,7 +54,7 @@ model.getAccessToken = (accessToken) => {
 
 // Performs a lookup on the provided string and returns a token object
 model.getRefreshToken = (refreshToken) => {
-    debug(`Get refresh token ${refreshToken}`);
+    log.debug(`Get refresh token ${refreshToken}`);
     const token = db.tokens.find((token) => {
         return token.refreshToken === refreshToken;
     });
@@ -75,7 +75,7 @@ model.getRefreshToken = (refreshToken) => {
 
 // Saves the newly generated token object
 model.saveToken = (token, client, user) => {
-    debug(`Save token ${token.accessToken}`);
+    log.debug(`Save token ${token.accessToken}`);
 
     token.user   = { id: user.id }; 
     token.client = { id: client.id };
@@ -86,7 +86,7 @@ model.saveToken = (token, client, user) => {
 
 // Revoke refresh token after use - note ExpiresAt detail!
 model.revokeToken = (token) => {
-    debug(`Revoke token ${token.refreshToken}`);
+    log.debug(`Revoke token ${token.refreshToken}`);
 
     // Note: This is normally the DB object instance from getRefreshToken, so
     // just token.delete() or similar rather than the below findIndex.
@@ -106,7 +106,7 @@ model.revokeToken = (token) => {
 
 // Retrieves an authorization code
 model.getAuthorizationCode = (code) => {
-    debug(`Retrieving authorization code ${code}`);
+    log.debug(`Retrieving authorization code ${code}`);
 
     return db.authCodes.find((authCode) => {
         return authCode.authorizationCode === code;
@@ -115,7 +115,7 @@ model.getAuthorizationCode = (code) => {
 
 // Saves the newly generated authorization code object
 model.saveAuthorizationCode = (code, client, user) => {
-    debug(`Saving authorization code ${code.authorizationCode}`);
+    log.debug(`Saving authorization code ${code.authorizationCode}`);
     code.user   = { id: user.id };
     code.client = { id: client.id };
 
@@ -125,7 +125,7 @@ model.saveAuthorizationCode = (code, client, user) => {
 
 // Revokes the authorization code after use - note ExpiresAt detail!
 model.revokeAuthorizationCode = (code) => {
-    debug(`Revoking authorization code ${code.authorizationCode}`);
+    log.debug(`Revoking authorization code ${code.authorizationCode}`);
     
     const idx = db.authCodes.findIndex((authCode) => {
         return authCode.authorizationCode === code.authorizationCode;
@@ -145,14 +145,14 @@ model.revokeAuthorizationCode = (code) => {
 // Since we utilize router-based scope check middleware, here we simply check
 // for scope existance.
 model.verifyScope = (token, scope) => {
-    debug(`Verify scope ${scope} in token ${token.accessToken}`);
+    log.debug(`Verify scope ${scope} in token ${token.accessToken}`);
     if(scope && !token.scope) { return false; }
     return token;
 };
 
 // Can be used to sanitize or purely validate requested scope string
 model.validateScope = (user, client, scope) => {
-    debug(`Validating requested scope: ${scope}`);
+    log.debug(`Validating requested scope: ${scope}`);
 
     const validScope = (scope || '').split(' ').filter((key) => {
         return client.validScopes.indexOf(key) !== -1;

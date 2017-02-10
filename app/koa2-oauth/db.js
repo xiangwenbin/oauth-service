@@ -1,14 +1,14 @@
 
 export default {
     clients: [{
-        id: 'someClient',
+        id: 'saas',
         secret: 'superSecret', 
-        name: 'Sample client application',
+        name: 'saas',
         accessTokenLifetime: 3600,    // If omitted, server default will be used
         refreshTokenLifetime: 604800, // ^
         redirectUris: ['https://www.getpostman.com/oauth2/callback'],
         grants: ['client_credentials', 'refresh_token', 'authorization_code', 'password'],
-        validScopes: ['account', 'edit'],
+        validScopes: ['all'],
     }],
     users: [{
         id: 1,

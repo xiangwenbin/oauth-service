@@ -9,11 +9,9 @@ TestRouter.get('/getTest', async (ctx, next) => {
   // ctx.body = "getTest body";
 });
 TestRouter.get('/mservice/:serviceName', (ctx, next) => {
-  let baseUrl = Util.getBaseUrlByServiceName(ctx.params.serviceName);
-  ctx.body = baseUrl;
+  ctx.body = serviceName;
 });
 TestRouter.get('/info', (ctx, next) => {
-  // let baseUrl = Util.getBaseUrlByServiceName(ctx.params.serviceName);
   console.log(ctx.oauth);
   ctx.body = '{"status":"UP"}';
 });
