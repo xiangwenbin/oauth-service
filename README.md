@@ -70,3 +70,4 @@ import convert from 'koa-convert';
 
 ## 资料
 - request-promise https://www.npmjs.com/package/request-promise
+- Sequelize 中文API文档 https://itbilu.com/nodejs/npm/V1PExztfb.html

@@ -1,15 +1,25 @@
 default:
-  server:
-    port: 8100
-  mservice:
-    ip: 127.0.0.1
+    server:
+        port: 8100
+    mservice:
+        ip: 127.0.0.1
 dev:
-  server:
-    port: 8100
+    server:
+        port: 8100
+    datasource:
+        host: 127.0.0.1
+        port: 3306
+        database: accountcenter
+        username: root
+        password: mysql
+        pool:
+            max: 5
+            min: 0
+            idle: 10000
 test:
-  server:
-    port: 8100
+    server:
+        port: 8100
 production:
-  server:
-    port: 8100
+    server:
+        port: 8100
  

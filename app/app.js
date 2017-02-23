@@ -1,25 +1,24 @@
 /**
  * 设置默认环境变量
  */
-process.env.NODE_ENV = !process.env.NODE_ENV ? "dev" : process.env.NODE_ENV;
 
 /**
  * 服务启动入口
  * convert 包的作用 转换过时的generator中间件到anync中间件，如kao-static,koa-logger 
  */
+import CONFIG from './config.js';
 import Koa from 'koa';
 import convert from 'koa-convert';
 import logger from 'koa-logger';
 import koaStatic from 'koa-static';
 import session from "koa2-cookie-session";
-import Yaml from 'yaml-config';
 import path from 'path';
 import { argv } from 'optimist';
 
-import {TestRouter,LoginRouter,OauthRouter } from './router';
+import { TestRouter, LoginRouter, OauthRouter } from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
-import {oauth,KoaOAuthServer,model} from './koa2-oauth';
+import { oauth, KoaOAuthServer, model } from './koa2-oauth';
 
 
 import log4js from './log4js';
@@ -27,26 +26,25 @@ import co from 'co';
 import render from 'koa-ejs';
 
 
-//获取启动配置参数
-global.CONFIG = Yaml.readConfig(path.join(__dirname, 'appliction.yml'), process.env.NODE_ENV);
+
 const app = new Koa();
 const log = log4js.getLogger('DEBUG');
 
 //获取启动入参 node index.js --ip 127.0.0.1
-console.log("argv:", argv);
+log.debug("argv:", argv);
 
 if (!argv.ip) {
-  var os = require('os');
-  var ifaces = os.networkInterfaces();
-  for (var dev in ifaces) {
-    ifaces[dev].forEach(function (details) {
-      //获取本地无线的ip
-      if (details.family == 'IPv4' && (dev.toLowerCase() == "wlan")) {
-        argv.ip = details.address;
-      }
-    });
-  }
-  console.log("argv.ip",argv.ip);
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+    for (var dev in ifaces) {
+        ifaces[dev].forEach(function(details) {
+            //获取本地无线的ip
+            if (details.family == 'IPv4' && (dev.toLowerCase() == "wlan")) {
+                argv.ip = details.address;
+            }
+        });
+    }
+    log.debug("argv.ip",  argv.ip);
 }
 
 //NODE_ENV dev ,test,production defualt dev
@@ -54,6 +52,12 @@ if (!argv.ip) {
 log.debug("NODE_ENV:" + process.env.NODE_ENV);
 log.debug("启动目录:" + __dirname);
 
+// import sequelize from './sequelize/sequelize';
+// sequelize.authenticate().then(function(err) {
+//         console.log('Connection has been established successfully.');
+//     }).catch(function(err) {
+//         console.log('Unable to connect to the database:', err);
+//     });
 /**
  * 设置静态文件目录
  * 
@@ -68,9 +72,9 @@ app.use(convert(koaStatic('public')));
  * 
  */
 app.use(session({
-  key: "SESSIONID",   //default "koa:sid" 
-  expires: 3, //default 7 
-  path: "/" //default "/" 
+    key: "SESSIONID", //default "koa:sid" 
+    expires: 3, //default 7 
+    path: "/" //default "/" 
 }));
 
 /**
@@ -78,11 +82,11 @@ app.use(session({
  */
 log.debug("设置ejs模版");
 render(app, {
-  root: path.join(__dirname, 'template'),
-  layout: false,
-  viewExt: 'tpl',
-  cache: false,
-  debug: true
+    root: path.join(__dirname, 'template'),
+    layout: false,
+    viewExt: 'tpl',
+    cache: false,
+    debug: true
 });
 app.context.render = co.wrap(app.context.render);
 
@@ -90,27 +94,21 @@ app.context.render = co.wrap(app.context.render);
  * 设置oauth2 
  */
 log.debug("设置KoaOAuthServer");
-global.oauth = app.oauth = new KoaOAuthServer({
-    scope: true, // Alternatively string with required scopes (see verifyScope)
-    model: model,
-    allowBearerTokensInQueryString: true,
-    accessTokenLifetime: 3600,   // 1 hour
-    refreshTokenLifetime: 604800 // 1 week
-});
+app.oauth = oauth;
 
 /**
  * 异常处理
  * 
  */
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    err.status = err.statusCode || err.status || 500;
-    // throw err;
-    log.debug(err);
-    ctx.body = JSON.stringify({ code: err.status, data: JSON.stringify(err) });
-  }
+app.use(async(ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        err.status = err.statusCode || err.status || 500;
+        // throw err;
+        log.debug(err);
+        ctx.body = JSON.stringify({ code: err.status, data: JSON.stringify(err) });
+    }
 });
 
 /**
@@ -127,9 +125,9 @@ app.use(convert(logger()));
  * 前置过滤器 
  * 
  */
-app.use(async (ctx, next) => {
-  console.log("session:", ctx.session);
-  await next();
+app.use(async(ctx, next) => {
+    console.log("session:", ctx.session);
+    await next();
 });
 /**
  * 使用 自定义koabody中间件 提取body信息
@@ -154,12 +152,12 @@ app.use(OauthRouter.routes());
  * 
  */
 app.use((ctx) => {
-  ctx.body = JSON.stringify({ code: 404, data: 'null' });
+    ctx.body = JSON.stringify({ code: 404, data: 'null' });
 });
 
 
 app.on('error', (err, ctx) => {
-  console.error('服务异常：', err, ctx);
+    console.error('服务异常：', err, ctx);
 });
 
 app.listen(CONFIG.server.port, () => log.debug(`server started ${CONFIG.server.port}`));
@@ -167,5 +165,5 @@ app.listen(CONFIG.server.port, () => log.debug(`server started ${CONFIG.server.p
 
 //进程退出事件
 process.on('exit', () => {
-  console.log("进程终止");
+    console.log("进程终止");
 });
