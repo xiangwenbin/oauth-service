@@ -18,7 +18,7 @@ import { argv } from 'optimist';
 import { TestRouter, LoginRouter, OauthRouter } from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
-import { oauth, KoaOAuthServer, model } from './koa2-oauth';
+import { oauth } from './koa2-oauth';
 
 
 import log4js from './log4js';

@@ -9,12 +9,7 @@ import { UserService } from '../service';
  * 登陆路由
  */
 LoginRouter.get('/login', async(ctx, next) => {
-    var result = await UserService.getUserById(1).then((user) => {
-        return user == null ? null : user.get({
-            plain: true
-        })
-    });
-    log.debug(result);
+    
     await ctx.render("login", { msg: 'hello world' });
     // ctx.body = "getTest body";
 });

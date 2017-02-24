@@ -11,6 +11,13 @@ class UserService {
     static getUserById(id) {
         return User.findById(id);
     }
+
+    static updateUser(user) {
+        if(user.id&&user.id>0){
+            
+        }
+        return User.findById(id);
+    }
 }
 
 export default UserService

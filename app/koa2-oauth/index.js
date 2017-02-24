@@ -7,4 +7,4 @@ const oauth = new KoaOAuthServer({
     accessTokenLifetime: 3600,   // 1 hour
     refreshTokenLifetime: 604800 // 1 week
 });
-export { model,KoaOAuthServer,oauth};
+export {oauth};
