@@ -1,6 +1,6 @@
 import rp from 'request-promise';
 import _ from 'lodash';
-import {User} from '../sequelize/model';
+import { User } from '../sequelize/model';
 
 
 /**
@@ -12,11 +12,19 @@ class UserService {
         return User.findById(id);
     }
 
+    static createUser(user) {
+        return User.create(user, {
+            logging: true
+        });
+    }
+
     static updateUser(user) {
-        if(user.id&&user.id>0){
-            
-        }
-        return User.findById(id);
+        return User.update(user, {
+            where: {
+                id: user.id
+            },
+            logging: true
+        });
     }
 }
 

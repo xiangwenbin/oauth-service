@@ -44,7 +44,7 @@ if (!argv.ip) {
             }
         });
     }
-    log.debug("argv.ip",  argv.ip);
+    log.debug("argv.ip", argv.ip);
 }
 
 //NODE_ENV dev ,test,production defualt dev
@@ -96,6 +96,7 @@ app.context.render = co.wrap(app.context.render);
 log.debug("设置KoaOAuthServer");
 app.oauth = oauth;
 
+
 /**
  * 异常处理
  * 
@@ -107,7 +108,11 @@ app.use(async(ctx, next) => {
         err.status = err.statusCode || err.status || 500;
         // throw err;
         log.debug(err);
-        ctx.body = JSON.stringify({ code: err.status, data: JSON.stringify(err) });
+        if (!ctx.isAjax) {
+            ctx.redirect(`/error/${err.status}`);
+        } else {
+            ctx.body = JSON.stringify({ code: err.status, msg: JSON.stringify(err) });
+        }
     }
 });
 
@@ -129,6 +134,18 @@ app.use(async(ctx, next) => {
     console.log("session:", ctx.session);
     await next();
 });
+
+/**
+ * header处理
+ * 
+ */
+app.use(async(ctx, next) => {
+    if(ctx.header["X-Requested-With"]=="XMLHttpRequest"){
+        ctx.isAjax=true;
+    }
+    await next();
+});
+
 /**
  * 使用 自定义koabody中间件 提取body信息
  * 
@@ -152,6 +169,7 @@ app.use(OauthRouter.routes());
  * 
  */
 app.use((ctx) => {
+
     ctx.body = JSON.stringify({ code: 404, data: 'null' });
 });
 

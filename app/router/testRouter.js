@@ -1,20 +1,36 @@
 import router from 'koa-router';
 import Util from '../util/util';
+import log4js from '../log4js';
+
 import { UserService } from '../service';
 const TestRouter = router();
+const log = log4js.getLogger('DEBUG');
 /**
  * unit 测试路由
  */
 TestRouter.get('/getTest', async(ctx, next) => {
-    var result = await UserService.getUserById(1).then((user) => {
+    
+
+    await ctx.render("test", { msg: 'hello world' });
+    // ctx.body = "getTest body";
+});
+TestRouter.get('/test/user/:id', async(ctx, next) => {
+    
+    var result = await UserService.getUserById(ctx.params.id).then((user) => {
         return user == null ? null : user.get({
             plain: true
         })
     });
-    log.debug(result);
+    ctx.body = result?result:"null";
+});
+TestRouter.post('/test/user/', async(ctx, next) => {
+    var user=ctx.request.body;
+    console.log(user);
+    var result = await UserService.updateUser(user).then((user) => {
+        return user;
+    });
 
-    await ctx.render("test", { msg: 'hello world' });
-    // ctx.body = "getTest body";
+    ctx.body = result?result:"null";
 });
 TestRouter.get('/mservice/:serviceName', (ctx, next) => {
     ctx.body = serviceName;

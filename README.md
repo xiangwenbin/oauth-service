@@ -23,23 +23,27 @@
 - transform-es2015-parameters （支持默认参数， 参数解构， 以及其他参数）
 
 ## node app服务 目录结构说明 
-	app  nodejs  根目录
-	
+	app   nodejs  根目录
+
+         -compose 组合服务
+
 		 -const  常量目录
 		
 		 -filter 过滤器 koa中间件存放目录
 		
-		 -model  基础数据模型存放目录 //暂时，将来会移除
+         -koa2-oauth oauth2 koa 中间件
+
+		 -sequelize  orm框架目录
+            -model  orm dto 数据模型
 		
 		 -router 路由 客户端调用的异步接口目录
 		
-		 -service 微服务数据接口
+		 -service 基础服务
 
 		 -template 客户端页面模版文件目录
 
 		 -util 公共类
-		 
-		 -view 客户端视图数据模型存放目录 视图为GraphQL对象
+		
 
 		 
 
