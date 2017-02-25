@@ -28,7 +28,7 @@ import render from 'koa-ejs';
 
 
 const app = new Koa();
-const log = log4js.getLogger('DEBUG');
+const log = log4js.getLogger("DEBUG");
 
 //获取启动入参 node index.js --ip 127.0.0.1
 log.debug("argv:", argv);
@@ -107,7 +107,7 @@ app.use(async(ctx, next) => {
     } catch (err) {
         err.status = err.statusCode || err.status || 500;
         // throw err;
-        log.debug(err);
+        log.error(err);
         if (!ctx.isAjax) {
             ctx.redirect(`/error/${err.status}`);
         } else {
@@ -137,10 +137,11 @@ app.use(async(ctx, next) => {
 
 /**
  * header处理
- * 
+ * X-Requested-With 异步接口标示
  */
 app.use(async(ctx, next) => {
-    if(ctx.header["X-Requested-With"]=="XMLHttpRequest"){
+    // log.debug(ctx.header);
+    if(ctx.header["X-Requested-With".toLowerCase()]=="XMLHttpRequest"){
         ctx.isAjax=true;
     }
     await next();

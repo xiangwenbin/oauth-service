@@ -14,7 +14,11 @@ class UserService {
 
     static createUser(user) {
         return User.create(user, {
-            logging: true
+            fields:[
+                "username","password","email","mobile","areaCode"
+            ]
+            // ,
+            // logging: true
         });
     }
 
@@ -23,6 +27,9 @@ class UserService {
             where: {
                 id: user.id
             },
+            fields:[
+                "username","email","mobile","areaCode"
+            ],
             logging: true
         });
     }

@@ -23,6 +23,15 @@ TestRouter.get('/test/user/:id', async(ctx, next) => {
     });
     ctx.body = result?result:"null";
 });
+TestRouter.put('/test/user/', async(ctx, next) => {
+    var user=ctx.request.body;
+    console.log(user);
+    var result = await UserService.createUser(user).then((user) => {
+        return user;
+    });
+
+    ctx.body = result?result:"null";
+});
 TestRouter.post('/test/user/', async(ctx, next) => {
     var user=ctx.request.body;
     console.log(user);

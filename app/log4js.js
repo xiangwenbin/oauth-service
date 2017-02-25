@@ -6,9 +6,9 @@ import log4js from 'log4js';
 log4js.configure({
     appenders: [
         {
+            //默认输出路径
             type: 'console',
-            level: 'DEBUG',
-            category: "DEBUG"
+            level: 'DEBUG'
         },
         {
             type: 'dateFile',
@@ -18,15 +18,37 @@ log4js.configure({
             pattern: '-yyyy-MM-dd.log',
             alwaysIncludePattern: true,
             level: 'INFO',
-            category: "access"
+            category: "ACESS"
         },
         {
-            type: 'file',
-            filename: 'logs/errors.log',
+            type: 'dateFile',
+            filename: 'logs/errors',
             maxLogSize: 20480,
             backups: 3,
-            level: 'ERROR'
+            pattern: '-yyyy-MM-dd.log',
+            alwaysIncludePattern: true,
+            level: 'ERROR',
+            category: "ERROR"
+        },
+        {
+           
+            type: 'dateFile',
+            filename: 'logs/debugs',
+            pattern: '-yyyy-MM-dd.log',
+            alwaysIncludePattern: true,
+            maxLogSize: 20480,
+            backups: 3,
+            level: 'DEBUG',
+            category: "DEBUG"
         }
+        // ,
+        // {
+        //     type: 'file',
+        //     filename: 'logs/errors',
+        //     maxLogSize: 20480,
+        //     backups: 3,
+        //     level: 'ERROR'
+        // }
     ]
 });
 export default log4js

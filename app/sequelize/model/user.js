@@ -1,16 +1,22 @@
 import Sequelize from 'sequelize';
 import sequelize from '../sequelize';
+import {MD5} from "jshashes";
+var md5 = new MD5();
 var User = sequelize.define('User', {
     id: {
         type: Sequelize.BIGINT.UNSIGNED,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement:true
     },
     username: {
         type: Sequelize.STRING
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        set(password) {
+            this.setDataValue('password', md5.hex(password));
+        }
     },
     email: {
         type: Sequelize.STRING(64),
@@ -25,7 +31,7 @@ var User = sequelize.define('User', {
     },
     mobile: {
         type: Sequelize.STRING(11)
-    },
+    }
 }, {
     validate: {
         neigtherNull: function() {
