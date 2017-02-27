@@ -17,6 +17,10 @@ dev:
             min: 0
             idle: 10000
         logging: true 
+    redis:
+        host: 10.0.101.10
+        port: 6379
+        password: huitaxredis
 test:
     server:
         port: 8100

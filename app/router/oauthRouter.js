@@ -2,7 +2,7 @@ import router from 'koa-router';
 import db from '../koa2-oauth/db';
 import Util from '../util/util';
 import log4js from '../log4js';
-import {oauth} from '../koa2-oauth';
+import { oauth } from '../koa2-oauth';
 const log = log4js.getLogger('DEBUG');
 
 const OauthRouter = router();
@@ -20,15 +20,15 @@ const OauthRouter = router();
  *  @example /oauth/authorize?client_id=someClient&state=xyz&response_type=token
  *  
  */
-OauthRouter.get('/oauth/authorize', (ctx,next) => {
+OauthRouter.get('/oauth/authorize', (ctx, next) => {
     log.debug(ctx.session);
-    if(!ctx.session.userId) {
+    if (!ctx.session.userId) {
         log.debug('User not authenticated, redirecting to /login');
         ctx.session.query = {
-            state:         ctx.request.query.state,
-            scope:         ctx.request.query.scope,
-            client_id:     ctx.request.query.client_id,
-            redirect_uri:  ctx.request.query.redirect_uri,
+            state: ctx.request.query.state,
+            scope: ctx.request.query.scope,
+            client_id: ctx.request.query.client_id,
+            redirect_uri: ctx.request.query.redirect_uri,
             response_type: ctx.request.query.response_type
         };
 
@@ -39,8 +39,8 @@ OauthRouter.get('/oauth/authorize', (ctx,next) => {
         return client.id === ctx.session.query.client_id;
     });
 
-    if(!client) { ctx.throw(401, 'No such client'); }
-    ctx.request.body         = ctx.session.query;
+    if (!client) { ctx.throw(401, 'No such client'); }
+    ctx.request.body = ctx.session.query;
     ctx.request.body.user_id = ctx.session.userId;
     return next();
 }, oauth.authorize({
@@ -53,9 +53,21 @@ OauthRouter.get('/oauth/authorize', (ctx,next) => {
     }
 }));
 
+/**
+ * 
+ * 通过授权码获取访问token
+ * Content-type application/x-www-form-urlencoded
+ * @param  client_id
+ * @param  client_secret
+ * @param  grant_type authorization_code
+ * @param  code
+ * @param  scope all
+ */
+OauthRouter.post('/oauth/token',  oauth.token());
+
 OauthRouter.get('/oauth/info', (ctx, next) => {
 
-  ctx.body = '{"status":"UP"}';
+    ctx.body = '{"status":"UP"}';
 });
 
 export default OauthRouter;
