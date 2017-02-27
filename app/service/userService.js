@@ -8,33 +8,62 @@ import { User } from '../sequelize/model';
  */
 class UserService {
 
+    /**
+     * 创建用户
+     */
+    static createUser(user) {
+        return User.create(user, {
+            fields: [
+                "username", "password", "email", "mobile", "areaCode"
+            ]
+
+        });
+    }
+
+    /**
+     * 通过id查找 用户
+     */
     static getUserById(id) {
         return User.findById(id);
     }
 
-    static getUserByUserNameAndPassword({username,password}) {
-        return User.findOne({where:{
-            username:username,
-            password:password
-        }});
-    }
-
-    static createUser(user) {
-        return User.create(user, {
-            fields:[
-                "username","password","email","mobile","areaCode"
-            ]
-            
+    /**
+     * 通过用户名，密码查找用户
+     */
+    static getUserByUserNameAndPassword({ username, password }) {
+        return User.findOne({
+            where: {
+                username: username,
+                password: password
+            }
         });
     }
 
+
+    /**
+     * 通过id 修改用户
+     */
     static updateUserById(user) {
         return User.update(user, {
             where: {
                 id: user.id
             },
-            fields:[
-                "username","email","mobile","areaCode"
+            fields: [
+                "username", "email", "mobile", "areaCode"
+            ]
+        });
+    }
+
+    /**
+     * 修改密码
+     */
+    static updatePassword(user) {
+        return User.update(user, {
+            where: {
+                id: user.id
+            },
+            fields: [
+                "password"
             ]
         });
     }

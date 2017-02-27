@@ -1,2 +1,3 @@
 import User from './user';
-export {User};
+import UserInfo from './userInfo';
+export {User,UserInfo};
