@@ -25,7 +25,9 @@
 ## node app服务 目录结构说明 
 	app   nodejs  根目录
 
-         -compose 组合服务
+         -compose 组合服务 组合复杂外观服务
+
+		 -facade 外观服务 对单一service服务 的封装 
 
 		 -const  常量目录
 		
@@ -38,7 +40,7 @@
 		
 		 -router 路由 客户端调用的异步接口目录
 		
-		 -service 基础服务
+		 -service 基础服务 遵循单一原则
 
 		 -template 客户端页面模版文件目录
 

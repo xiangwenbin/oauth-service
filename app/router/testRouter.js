@@ -35,7 +35,7 @@ TestRouter.put('/test/user/', async(ctx, next) => {
 TestRouter.post('/test/user/', async(ctx, next) => {
     var user=ctx.request.body;
     console.log(user);
-    var result = await UserService.updateUser(user).then((user) => {
+    var result = await UserService.updateUserById(user).then((user) => {
         return user;
     });
 
