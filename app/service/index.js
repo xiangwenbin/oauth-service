@@ -1,2 +1,4 @@
 import UserService from './userService';
-export {UserService};
+import UserInfoService from './userInfoService';
+
+export {UserService,UserInfoService};

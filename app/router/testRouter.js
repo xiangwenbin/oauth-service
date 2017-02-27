@@ -3,6 +3,7 @@ import Util from '../util/util';
 import log4js from '../log4js';
 
 import { UserService } from '../service';
+import { UserFacade } from '../facade';
 const TestRouter = router();
 const log = log4js.getLogger('DEBUG');
 /**
@@ -30,6 +31,14 @@ TestRouter.put('/test/user/', async(ctx, next) => {
         return user;
     });
 
+    ctx.body = result?result:"null";
+});
+TestRouter.put('/test/user2/', async(ctx, next) => {
+    var user=ctx.request.body;
+    console.log(user);
+    var result = await UserFacade.createUser(user).then((user) => {
+        return user;
+    });
     ctx.body = result?result:"null";
 });
 TestRouter.post('/test/user/', async(ctx, next) => {

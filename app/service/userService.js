@@ -15,7 +15,9 @@ class UserService {
         return User.create(user, {
             fields: [
                 "username", "password", "email", "mobile", "areaCode"
-            ]
+            ],
+            attributes: {exclude: ['password']}
+        },{
 
         });
     }
@@ -24,7 +26,9 @@ class UserService {
      * 通过id查找 用户
      */
     static getUserById(id) {
-        return User.findById(id);
+        return User.findById(id,{
+            attributes: {exclude: ['password'] }
+        });
     }
 
     /**
@@ -69,4 +73,4 @@ class UserService {
     }
 }
 
-export default UserService
+export default UserService;

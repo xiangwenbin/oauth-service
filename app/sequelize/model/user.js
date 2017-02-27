@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize';
 import sequelize from '../sequelize';
-import {MD5} from "jshashes";
+import { MD5 } from "jshashes";
 var md5 = new MD5();
 var User = sequelize.define('User', {
     id: {
         type: Sequelize.BIGINT.UNSIGNED,
         primaryKey: true,
-        autoIncrement:true
+        autoIncrement: true
     },
     username: {
         type: Sequelize.STRING

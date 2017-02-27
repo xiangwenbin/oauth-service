@@ -28,4 +28,4 @@ class UserInfoService {
 
 }
 
-export default UserInfoService
+export default UserInfoService;
