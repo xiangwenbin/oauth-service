@@ -26,28 +26,26 @@
 	app   nodejs  根目录
 
          -compose 组合服务 组合复杂外观服务
+		 
+         -const  常量目录
 
 		 -facade 外观服务 对单一service服务 的封装 
-
-		 -const  常量目录
 		
 		 -filter 过滤器 koa中间件存放目录
 		
          -koa2-oauth oauth2 koa 中间件
-
-		 -sequelize  orm框架目录
-            -model  orm dto 数据模型
 		
 		 -router 路由 客户端调用的异步接口目录
+
+         -sequelize  orm框架目录
+            -model  orm dto 数据模型
 		
 		 -service 基础服务 遵循单一原则
 
 		 -template 客户端页面模版文件目录
 
 		 -util 公共类
-		
 
-		 
 
 ## 一些命名规范
 - 所有js文件首字母小写
