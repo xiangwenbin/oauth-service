@@ -1,6 +1,12 @@
 import _ from 'lodash';
-
+import UUID from 'node-uuid';
 class Util {
+    
+    static generateUUID(){
+        let args = [...arguments];
+        return UUID.v4(...args);
+    }
+
     /**
      * 获取默认请求头
      */

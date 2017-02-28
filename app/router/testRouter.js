@@ -14,7 +14,6 @@ const log = log4js.getLogger('DEBUG');
  */
 TestRouter.get('/getTest', async(ctx, next) => {
 
-
     await ctx.render("test", { msg: 'hello world' });
     // ctx.body = "getTest body";
 });
@@ -65,9 +64,10 @@ TestRouter.put('/test/client/', async(ctx, next) => {
 });
 TestRouter.get('/test/client/:id', async(ctx, next) => {
     var result = await redisClient.hgetallAsync(`client:${ctx.params.id}`).then((r)=>{
+        log.debug("from redis cache",r);
         return r;
     });
-    console.log(`client:${ctx.params.id}`,result);
+    
     if (!result) {
         result = await ClientService.getClientById(ctx.params.id).then((client) => {
             return client == null ? null : client.get({
@@ -75,7 +75,6 @@ TestRouter.get('/test/client/:id', async(ctx, next) => {
             });
         });
         redisClient.hmset(`client:${ctx.params.id}`,result);
-        console.log(`client:${ctx.params.id}`,result);
     }
     ctx.body = result ? result : "null";
 });

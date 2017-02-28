@@ -4,6 +4,7 @@ const oauth = new KoaOAuthServer({
     scope: true, // Alternatively string with required scopes (see verifyScope)
     model: model,
     allowBearerTokensInQueryString: true,
+    authorizationCodeLifetime:300, //5 min
     accessTokenLifetime: 3600,   // 1 hour
     refreshTokenLifetime: 604800 // 1 week
 });

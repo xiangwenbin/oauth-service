@@ -15,7 +15,7 @@ import session from "koa2-cookie-session";
 import path from 'path';
 import { argv } from 'optimist';
 
-import { TestRouter, LoginRouter, OauthRouter } from './router';
+import { TestRouter, LoginRouter, OauthRouter ,ErrorRouter} from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
 import { oauth } from './koa2-oauth';
@@ -105,9 +105,9 @@ app.use(async(ctx, next) => {
     try {
         await next();
     } catch (err) {
+        log.error(err);
         err.status = err.statusCode || err.status || 500;
         // throw err;
-        log.error(err);
         if (!ctx.isAjax) {
             ctx.redirect(`/error/${err.status}`);
         } else {
@@ -141,8 +141,8 @@ app.use(async(ctx, next) => {
  */
 app.use(async(ctx, next) => {
     // log.debug(ctx.header);
-    if(ctx.header["X-Requested-With".toLowerCase()]=="XMLHttpRequest"){
-        ctx.isAjax=true;
+    if (ctx.header["X-Requested-With".toLowerCase()] == "XMLHttpRequest") {
+        ctx.isAjax = true;
     }
     await next();
 });
@@ -164,25 +164,25 @@ log.debug("设置请求路由");
 app.use(TestRouter.routes());
 app.use(LoginRouter.routes());
 app.use(OauthRouter.routes());
+app.use(ErrorRouter.routes());
+
 
 /**
  * 默认404请求返回值
  * 
  */
 app.use((ctx) => {
-
     ctx.body = JSON.stringify({ code: 404, data: 'null' });
 });
 
 
 app.on('error', (err, ctx) => {
-    console.error('服务异常：', err, ctx);
+    log.error('服务异常：', err, ctx);
 });
 
 app.listen(CONFIG.server.port, () => log.debug(`server started ${CONFIG.server.port}`));
 
-
 //进程退出事件
 process.on('exit', () => {
-    console.log("进程终止");
+    log.error("进程终止");
 });

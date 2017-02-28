@@ -1,6 +1,16 @@
+# 用户授权平台
+
+## 简介
+
+* 后端框架:node  koa2(mvc) sequelize(orm) oauth2-server(中间件)
+* 缓存: node_redis
+* 数据库：mysql
+* 前端语言: es6+vue2
+* 前端打包工具:webpack
+* 开发工具:Visual Studio Code(推荐)
+
 ##  Node版本
 - ^v6.2.2
-
 
 ## 安装本地环境
 - npm intall -g node-dev nodedev babel babel-cli
@@ -76,3 +86,5 @@ import convert from 'koa-convert';
 - request-promise https://www.npmjs.com/package/request-promise
 - Sequelize 中文API文档 https://itbilu.com/nodejs/npm/V1PExztfb.html
 - Redis https://github.com/NodeRedis/node_redis
+- koa2 https://github.com/guo-yu/koa-guide
+- oauth2-server https://github.com/oauthjs/node-oauth2-server/wiki/Migrating-from-2.x-to-3.x

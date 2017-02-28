@@ -1,2 +1,4 @@
 import UserFacade from './userFacade';
-export {UserFacade};
+import ClientFacade from './clientFacade';
+import OauthCodeFacade from './oauthCodeFacade';
+export { UserFacade, ClientFacade,OauthCodeFacade };

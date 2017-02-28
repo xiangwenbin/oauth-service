@@ -1,10 +1,14 @@
+import _ from 'lodash';
+import CONFIG from '../config.js';
 import router from 'koa-router';
 import db from '../koa2-oauth/db';
 import Util from '../util/util';
 import log4js from '../log4js';
 import { oauth } from '../koa2-oauth';
-const log = log4js.getLogger('DEBUG');
+import redisClient from "../redis/redis";
+import { UserService, ClientService } from '../service';
 
+const log = log4js.getLogger('DEBUG');
 const OauthRouter = router();
 
 // 授权路由
@@ -17,38 +21,67 @@ const OauthRouter = router();
  *  @param state 
  *  @param response_type 
  *  
- *  @example /oauth/authorize?client_id=someClient&state=xyz&response_type=token
+ *  @example /oauth/authorize?client_id=someClient&state=xyz&response_type=code
  *  
  */
-OauthRouter.get('/oauth/authorize', (ctx, next) => {
-    log.debug(ctx.session);
-    if (!ctx.session.userId) {
+OauthRouter.get('/oauth/authorize', async(ctx, next) => {
+    // log.debug(ctx.session);
+    // //校验cliend_id
+    // let client = await ClientService.getClientByClientId(ctx.request.query.client_id).then((client) => {
+    //     return client == null ? null : client.get({
+    //         plain: true
+    //     });
+    // });
+    // if (!client) {
+    //     ctx.throw(401, '不存在该客户端');
+    //     return ;
+    // }
+    //验证缓存里是否存在用户认证信息
+    let uuid = ctx.cookies.get("session:uuid");
+    let uuidCache = uuid ? await redisClient.hgetallAsync(`session:${uuid}`).then((result) => {
+        log.debug(`cache session:${uuid}`, result);
+        return result;
+    }) : null;
+    if (!(uuidCache && uuidCache.userId)) {
         log.debug('User not authenticated, redirecting to /login');
-        ctx.session.query = {
-            state: ctx.request.query.state,
-            scope: ctx.request.query.scope,
+        let query = {
+            state: ctx.request.query.state||'',
+            scope: ctx.request.query.scope||'',
             client_id: ctx.request.query.client_id,
-            redirect_uri: ctx.request.query.redirect_uri,
+            redirect_uri: ctx.request.query.redirect_uri||'',
             response_type: ctx.request.query.response_type
         };
-
+        uuid = Util.generateUUID();
+        log.debug(`generateUUID:`, uuid);
+        // ctx.cookies.set("session:uuid", uuid, {domain: CONFIG.domain});
+        ctx.cookies.set("session:uuid", uuid);
+        // _.merge({}, query)
+        redisClient.hmset(`session:${uuid}`, _.merge({}, query));
         ctx.redirect('/login');
         return;
     }
-    const client = db.clients.find((client) => {
-        return client.id === ctx.session.query.client_id;
-    });
 
-    if (!client) { ctx.throw(401, 'No such client'); }
-    ctx.request.body = ctx.session.query;
-    ctx.request.body.user_id = ctx.session.userId;
+    // const client = db.clients.find((client) => {
+    //     return client.id === ctx.session.query.client_id;
+    // });
+
+    // if (!client) { ctx.throw(401, 'No such client'); }
+    ctx.request.body = uuidCache;
+    // ctx.request.body.user_id = ctx.session.userId;
     return next();
 }, oauth.authorize({
     authenticateHandler: {
-        handle: (req, res) => {
-            return db.users.find((user) => {
-                return user.id === req.body.user_id;
+        handle: async(req, res) => {
+
+            // return db.users.find((user) => {
+            //     return user.id === req.body.user_id;
+            // });
+            let user = await UserService.getUserById(req.body.userId).then((result) => {
+                return result == null ? null : result.get({
+                    plain: true
+                });
             });
+            return user;
         }
     }
 }));
@@ -63,7 +96,7 @@ OauthRouter.get('/oauth/authorize', (ctx, next) => {
  * @param  code
  * @param  scope all
  */
-OauthRouter.post('/oauth/token',  oauth.token());
+OauthRouter.post('/oauth/token', oauth.token());
 
 OauthRouter.get('/oauth/info', (ctx, next) => {
 

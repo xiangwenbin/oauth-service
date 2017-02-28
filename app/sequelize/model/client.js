@@ -16,6 +16,7 @@ var Client = sequelize.define('Client', {
         type: Sequelize.STRING,
         allowNull: false
     },
+
     clientId: {
         type: Sequelize.STRING(64),
         allowNull: false
@@ -33,6 +34,14 @@ var Client = sequelize.define('Client', {
         allowNull: false
     }
 }, {
+    getterMethods: {
+        grants: function() {
+            return this.grantType.split(" ");
+        },
+        redirectUris: function() {
+            return this.redirectUri.split(" ");
+        }
+    },
     validate: {
 
     },

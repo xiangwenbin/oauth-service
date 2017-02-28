@@ -18,10 +18,33 @@ class ClientService {
     }
 
     /**
-     * 通过id查找 客户
+     * 通过id 查找 客户
      */
     static getClientById(id) {
         return Client.findById(id, {});
+    }
+
+    /**
+     * 通过clientId,secret  查找客户
+     */
+    static getClientByClientIdAndSecret(clientId, secret) {
+        return Client.findOne({
+            where: {
+                clientId: clientId,
+                secret: secret
+            }
+        });
+    }
+
+    /**
+     * 通过clientId  查找客户
+     */
+    static getClientByClientId(clientId) {
+        return Client.findOne({
+            where: {
+                clientId: clientId
+            }
+        });
     }
 }
 

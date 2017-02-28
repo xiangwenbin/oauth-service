@@ -1,4 +1,5 @@
 default:
+    domain: demo.com
     server:
         port: 8100
     mservice:

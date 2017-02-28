@@ -35,10 +35,11 @@ class UserService {
      * 通过用户名，密码查找用户
      */
     static getUserByUserNameAndPassword({ username, password }) {
+        let user=User.build({username,password}).get({plain: true})
         return User.findOne({
             where: {
-                username: username,
-                password: password
+                username: user.username,
+                password: user.password
             }
         });
     }
