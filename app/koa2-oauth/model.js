@@ -10,39 +10,30 @@ var model = {};
 model.getClient = async(clientId, secret) => {
     log.debug(`Looking up client ${clientId}:${secret}`);
 
-    // const lookupMethod = typeof secret === 'undefined'|| secret==null
-    //     ? (client) => { return client.id === id; }
-    //     : (client) => { return client.id === id && client.secret === secret };
-
     let client = await ClientFacade.getClientByClientIdAndSecret(clientId, secret).then((result) => {
         return result == null ? null : result.get({
             plain: true
         });
     });
-    // if (!client) {
-    //     ctx.throw(401, '不存在该客户端');
-    //     return ;
-    // }
-    return client;
-    // console.log("clients",db.clients);
-    // return db.clients.find(lookupMethod);
-};
-/**
- * 授权码授权未用到
- */
-model.getUser = async(username, password) => {
 
-    log.debug(`Looking up user ${username}:${password}`);
-    let user = await UserService.getUserByUserNameAndPassword(username, password).then((result) => {
-        return result == null ? null : result.get({
-            plain: true
-        });
-    });
-    return user;
-    // return db.users.find((user) => {
-    //     return user.username === username && user.password === password;
-    // });
+    return client;
 };
+// /**
+//  * 授权码授权未用到
+//  */
+// model.getUser = async(username, password) => {
+
+//     log.debug(`Looking up user ${username}:${password}`);
+//     let user = await UserService.getUserByUserNameAndPassword(username, password).then((result) => {
+//         return result == null ? null : result.get({
+//             plain: true
+//         });
+//     });
+//     return user;
+//     // return db.users.find((user) => {
+//     //     return user.username === username && user.password === password;
+//     // });
+// };
 
 // In the client credentials grant flow, the client itself needs to be related
 // with some form of user representation
@@ -148,13 +139,13 @@ model.getAuthorizationCode = async(code) => {
 model.saveAuthorizationCode = async(code, client, user) => {
     log.debug(`Saving authorization code ${code.authorizationCode}`);
     let oauthCode = {
-            code: code.authorizationCode,
-            clientId: client.id,
-            userId: user.id,
-            expiresTime: code.expiresAt.getTime()
-        }
-        // code.user = { id: user.id };
-        // code.client = { id: client.id };
+        code: code.authorizationCode,
+        clientId: client.id,
+        userId: user.id,
+        expiresTime: code.expiresAt.getTime()
+    };
+    // code.user = { id: user.id };
+    // code.client = { id: client.id };
     oauthCode = await OauthCodeService.createOauthCode(oauthCode).then((result) => {
         return result;
     });
