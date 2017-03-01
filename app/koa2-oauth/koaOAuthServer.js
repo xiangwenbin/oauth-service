@@ -86,8 +86,8 @@ class KoaOAuthServer {
                 })
                 .then((token) => {
                     ctx.state.oauth = { token: token };
-                    return handleResponse(ctx, response);
-                    // return next();
+                    handleResponse(ctx, response);
+                    return next();
                 })
                 .catch((err) => { handleError(err, ctx); });
         };

@@ -96,7 +96,9 @@ OauthRouter.get('/oauth/authorize', async(ctx, next) => {
  * @param  code
  * @param  scope all
  */
-OauthRouter.post('/oauth/token', oauth.token());
+OauthRouter.post('/oauth/token', oauth.token(),(ctx, next)=>{
+    return ;
+});
 
 OauthRouter.get('/oauth/info', (ctx, next) => {
 

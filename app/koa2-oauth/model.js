@@ -233,7 +233,6 @@ model.validateScope = (user, client, scope) => {
     const validScope = (scope || '').split(' ').filter((key) => {
         return client.validScopes.indexOf(key) !== -1;
     });
-    log.debug("##########",validScope);
     if (scope && !validScope.length) {
         return false;
     } else if (validScope.length>0) {
@@ -241,8 +240,6 @@ model.validateScope = (user, client, scope) => {
     } else {
         return true;
     }
-
-
 };
 
 export default model;
