@@ -14,7 +14,7 @@ class OauthCodeService {
     static createOauthCode(oauthCode) {
         return OauthCode.create(oauthCode, {
             fields: [
-                "code", "clientId", "userId", "expiresTime"
+                "code", "clientId", "userId", "expiresTime","scope"
             ]
         },{
 
@@ -30,7 +30,7 @@ class OauthCodeService {
                 id: oauthCode.id
             },
             fields: [
-                "code", "clientId", "userId", "expiresTime"
+                "code", "clientId", "userId", "expiresTime","scope"
             ]
         },{
         });

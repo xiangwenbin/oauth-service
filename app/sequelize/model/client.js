@@ -40,6 +40,9 @@ var Client = sequelize.define('Client', {
         },
         redirectUris: function() {
             return this.redirectUri.split(" ");
+        },
+        validScopes: function() {
+            return this.scope.split(" ");
         }
     },
     validate: {

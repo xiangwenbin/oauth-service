@@ -6,28 +6,28 @@ import UnauthorizedRequestError from 'oauth2-server/lib/errors/invalid-scope-err
 
 import log4js from '../log4js';
 const log = log4js.getLogger('DEBUG');
-const Request     = OAuthServer.Request,
-      Response    = OAuthServer.Response;
+const Request = OAuthServer.Request,
+    Response = OAuthServer.Response;
 
 
 class KoaOAuthServer {
     constructor(options) {
         this.options = options || {};
 
-        if(!options.model) {
+        if (!options.model) {
             throw new InvalidArgumentError('Missing parameter: `model`');
         }
 
         // If no `saveTokenMetadata` method is set via the model, we create
         // a simple passthrough mechanism instead
-        this.saveTokenMetadata = options.model.saveTokenMetadata
-            ? options.model.saveTokenMetadata
-            : (token, data) => { return Promise.resolve(token); };
+        this.saveTokenMetadata = options.model.saveTokenMetadata ?
+            options.model.saveTokenMetadata :
+            (token, data) => { return Promise.resolve(token); };
 
         // If no `checkScope` method is set via the model, we provide a default
-        this.checkScope = options.model.checkScope
-            ? options.model.checkScope
-            : (scope, token) => { return token.scope.indexOf(scope) !== -1; }
+        this.checkScope = options.model.checkScope ?
+            options.model.checkScope :
+            (scope, token) => { return token.scope.indexOf(scope) !== -1; }
 
         this.server = new OAuthServer(options);
     }
@@ -37,8 +37,8 @@ class KoaOAuthServer {
         log.debug('Creating authentication endpoint middleware');
         return (ctx, next) => {
             log.debug('Running authenticate endpoint middleware');
-            const request  = new Request(ctx.request),
-                  response = new Response(ctx.response);
+            const request = new Request(ctx.request),
+                response = new Response(ctx.response);
 
             return this.server
                 .authenticate(request, response)
@@ -56,8 +56,8 @@ class KoaOAuthServer {
         log.debug('Creating authorization endpoint middleware');
         return (ctx, next) => {
             log.debug('Running authorize endpoint middleware');
-            const request  = new Request(ctx.request),
-                  response = new Response(ctx.response);
+            const request = new Request(ctx.request),
+                response = new Response(ctx.response);
 
             return this.server
                 .authorize(request, response, options)
@@ -76,8 +76,8 @@ class KoaOAuthServer {
         log.debug('Creating token endpoint middleware');
         return (ctx, next) => {
             log.debug('Running token endpoint middleware');
-            const request  = new Request(ctx.request),
-                  response = new Response(ctx.response);
+            const request = new Request(ctx.request),
+                response = new Response(ctx.response);
 
             return this.server
                 .token(request, response)
@@ -86,8 +86,8 @@ class KoaOAuthServer {
                 })
                 .then((token) => {
                     ctx.state.oauth = { token: token };
-                    handleResponse(ctx, response);
-                    return next();
+                    return handleResponse(ctx, response);
+                    // return next();
                 })
                 .catch((err) => { handleError(err, ctx); });
         };
@@ -99,10 +99,10 @@ class KoaOAuthServer {
         log.debug(`Creating scope check middleware (${required})`);
         return (ctx, next) => {
             const result = this.checkScope(required, ctx.state.oauth.token);
-            if(result !== true) {
-                const err = result === false
-                    ? `Required scope: \`${required}\``
-                    : result;
+            if (result !== true) {
+                const err = result === false ?
+                    `Required scope: \`${required}\`` :
+                    result;
 
                 handleError(new InvalidScopeError(err), ctx);
                 return;
@@ -117,7 +117,7 @@ function handleResponse(ctx, response) {
     log.debug(`Preparing success response (${response.status})`);
     ctx.set(response.headers);
     ctx.status = response.status;
-    ctx.body   = response.body;
+    ctx.body = response.body;
 }
 
 // Add custom headers to the context, then propagate error upwards
@@ -132,9 +132,9 @@ function handleError(err, ctx) {
 }
 
 // Expose error classes
-KoaOAuthServer.OAuthError               = OAuthError;
-KoaOAuthServer.InvalidScopeError        = InvalidScopeError;
-KoaOAuthServer.InvalidArgumentError     = InvalidArgumentError;
+KoaOAuthServer.OAuthError = OAuthError;
+KoaOAuthServer.InvalidScopeError = InvalidScopeError;
+KoaOAuthServer.InvalidArgumentError = InvalidArgumentError;
 KoaOAuthServer.UnauthorizedRequestError = UnauthorizedRequestError;
 
 export default KoaOAuthServer;

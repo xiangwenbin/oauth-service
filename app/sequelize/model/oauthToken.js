@@ -2,46 +2,42 @@ import Sequelize from 'sequelize';
 import sequelize from '../sequelize';
 import { MD5 } from "jshashes";
 var md5 = new MD5();
-var OauthCode = sequelize.define('OauthCode', {
-    id: {
-        type: Sequelize.BIGINT.UNSIGNED,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    code: {
+var OauthToken = sequelize.define('OauthToken', {
+    accessToken: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    scope:{
-        type: Sequelize.STRING
+    refreshToken: {
+        type: Sequelize.STRING,
+        allowNull: false
     },
     clientId: {
+        primaryKey: true,
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
     },
     userId: {
+        primaryKey: true,
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
     },
-    expiresTime: {
+    accessTokenExpiresTime: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false
+    },
+    refreshTokenExpiresTime: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
     }
 }, {
-    
     getterMethods: {
-        expiresAt: function() {
-            return new Date(this.expiresTime);
-        },
-        authorizationCode:function() {
-            return this.code;
-        }
+        
     },
     validate: {
 
     },
     timestamps: false,
     freezeTableName: true,
-    tableName: 'AccountCenter_OauthCode'
+    tableName: 'AccountCenter_OauthToken'
 });
-export default OauthCode;
+export default OauthToken;
