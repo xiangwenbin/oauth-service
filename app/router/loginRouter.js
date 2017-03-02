@@ -62,8 +62,5 @@ LoginRouter.post('/login', async(ctx) => {
     ctx.redirect('/');
 });
 
-LoginRouter.get('/login/info', (ctx, next) => {
-    ctx.body = '{"status":"UP"}';
-});
 
 export default LoginRouter;

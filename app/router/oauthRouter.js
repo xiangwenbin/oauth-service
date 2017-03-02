@@ -81,9 +81,4 @@ OauthRouter.post('/oauth/token', oauth.token(),(ctx, next)=>{
     return ;
 });
 
-OauthRouter.get('/oauth/info', (ctx, next) => {
-
-    ctx.body = '{"status":"UP"}';
-});
-
 export default OauthRouter;

@@ -139,9 +139,9 @@ model.revokeToken = async(token) => {
     log.debug(`Revoke token ${token.refreshToken}`);
 
     let oauthToken = await OauthTokenService.revokeByRefreshToken(token.refreshToken).then(async(result) => {
-        if (reuslt) {
+        if (result) {
             return await OauthTokenService.getByRefreshToken(token.refreshToken).then((result) => {
-                return result ? reuslt.get({ plain: true }) : null;
+                return result ? result.get({ plain: true }) : null;
             });
         } else {
             return null
