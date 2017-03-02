@@ -75,6 +75,24 @@ class OauthTokenService {
     }
 
     /**
+     * 通过 refreshToken 移除 token
+     * @param {String} refreshToken 
+     */
+    static revokeByRefreshToken(refreshToken) {
+        let time = Date.now();
+        return OauthToken.update({
+            accessTokenExpiresTime: time,
+            refreshTokenExpiresTime: time
+        }, {
+            where: {
+                refreshToken: refreshToken
+            }
+        }, {
+
+        });
+    }
+
+    /**
      * 获取授权码对象
      */
     static getByClientIdAndUserId(clientId, userId) {

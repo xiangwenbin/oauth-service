@@ -1,12 +1,13 @@
 // import log.debug from 'log.debug';
 import _ from 'lodash';
 import log4js from '../log4js';
-import db from './db';
+// import db from './db';
 import { UserService, ClientService, OauthCodeService, OauthTokenService } from '../service';
 import { UserFacade, ClientFacade, OauthTokenFacade } from '../facade';
 const log = log4js.getLogger('DEBUG');
 var model = {};
-// Client lookup - Note that for *authcode* grants, the secret is not provided
+
+
 model.getClient = async(clientId, secret) => {
 
     log.debug(`Looking up client ${clientId}:${secret}`);
@@ -18,6 +19,7 @@ model.getClient = async(clientId, secret) => {
 
     return client;
 };
+
 // /**
 //  * 授权码授权未用到
 //  */
@@ -43,46 +45,50 @@ model.getClient = async(clientId, secret) => {
 // };
 
 // Performs a lookup on the provided string and returns a token object
-model.getAccessToken = (accessToken) => {
+model.getAccessToken = async(accessToken) => {
     log.debug(`Get access token ${accessToken}`);
 
-    const token = db.tokens.find((token) => {
-        return token.accessToken === accessToken;
+    let oauthToken = await OauthTokenService.getByAccessToken(accessToken).then((result) => {
+
+        return result ? result.get({ plain: true }) : null;
     });
 
-    if (!token) { return false; }
 
-    // Populate with user and client model instances
-    token.user = db.users.find((user) => {
-        return user.id === token.user.id;
-    });
 
-    token.client = db.clients.find((client) => {
-        return client.id === token.client.id;
-    });
+    if (!oauthToken) {
+        return false;
+    }
 
-    return token;
+    oauthToken.user = {
+        id: oauthToken.userId
+    }
+    oauthToken.client = {
+        id: oauthToken.clientId
+    }
+    return oauthToken;
 };
 
 // Performs a lookup on the provided string and returns a token object
-model.getRefreshToken = (refreshToken) => {
+model.getRefreshToken = async(refreshToken) => {
+
     log.debug(`Get refresh token ${refreshToken}`);
-    const token = db.tokens.find((token) => {
-        return token.refreshToken === refreshToken;
+
+    let oauthToken = await OauthTokenService.getByRefreshToken(refreshToken).then((result) => {
+        return result ? result.get({ plain: true }) : null;
     });
 
-    if (!token) { return false; }
+    if (!oauthToken) {
+        return false;
+    }
 
-    // Populate with user and client model instances
-    token.user = db.users.find((user) => {
-        return user.id === token.user.id;
-    });
+    oauthToken.user = {
+        id: oauthToken.userId
+    }
 
-    token.client = db.clients.find((client) => {
-        return client.id === token.client.id;
-    });
-
-    return token;
+    oauthToken.client = {
+        id: oauthToken.clientId
+    }
+    return oauthToken;
 };
 
 
@@ -95,6 +101,7 @@ model.getRefreshToken = (refreshToken) => {
 //         refreshTokenExpiresAt: refreshTokenExpiresAt,
 //         scope: scope
 // };
+
 model.saveToken = async(token, client, user) => {
     log.debug(`Save token ${token.accessToken} ${token.refreshToken}`);
 
@@ -123,26 +130,26 @@ model.saveToken = async(token, client, user) => {
     return token;
 };
 
-// Revoke refresh token after use - note ExpiresAt detail!
-// model.revokeToken = (token) => {
+/**
+ *  refresh token 钩子
+ *  @param {OauthToken} token
+ */
+model.revokeToken = async(token) => {
 
-//     log.debug(`Revoke token ${token.refreshToken}`);
+    log.debug(`Revoke token ${token.refreshToken}`);
 
-//     // Note: This is normally the DB object instance from getRefreshToken, so
-//     // just token.delete() or similar rather than the below findIndex.
-//     const idx = db.tokens.findIndex((item) => {
-//         return item.refreshToken === token.refreshToken;
-//     });
+    let oauthToken = await OauthTokenService.revokeByRefreshToken(token.refreshToken).then(async(result) => {
+        if (reuslt) {
+            return await OauthTokenService.getByRefreshToken(token.refreshToken).then((result) => {
+                return result ? reuslt.get({ plain: true }) : null;
+            });
+        } else {
+            return null
+        }
+    });
 
-//     db.tokens.splice(idx, 1);
-
-//     // Note: Presently, this method must return the revoked token object with
-//     // an expired date. This is currently being discussed in
-//     // https://github.com/thomseddon/node-oauth2-server/issues/251
-
-//     token.refreshTokenExpiresAt = new Date(1984);
-//     return token;
-// };
+    return oauthToken;
+};
 
 // Retrieves an authorization code  object
 model.getAuthorizationCode = async(code) => {
@@ -184,35 +191,15 @@ model.saveAuthorizationCode = async(code, client, user) => {
 model.revokeAuthorizationCode = async(oauthCode) => {
     log.debug(`Revoking authorization code ${oauthCode.code}`);
 
-
-    // let oauthCode =await OauthCodeService.getOauthCodeByCode(code.authorizationCode).then((result) => {
-    //     return result == null ? null : result.get({
-    //         plain: true
-    //     });
-    // });
-    // if(!oauthCode){
-    //     return false;
-    // }else{
     oauthCode.expiresTime = Date.now();
     let result = await OauthCodeService.updateOauthCode(oauthCode).then((result) => {
         return result;
     });
-    // }
+
     if (!result) {
         return false;
     } else
         return oauthCode;
-
-    // const idx = db.authCodes.findIndex((authCode) => {
-    //     return authCode.authorizationCode === code.authorizationCode;
-    // });
-
-    // if (!idx) { return false; }
-
-    // db.authCodes.splice(idx, 1);
-    // code.expiresAt.setYear(1984); // Same as for `revokeToken()`
-
-    // return code;
 };
 
 // Called in `authenticate()` - basic check for scope existance
@@ -235,7 +222,7 @@ model.validateScope = (user, client, scope) => {
     });
     if (scope && !validScope.length) {
         return false;
-    } else if (validScope.length>0) {
+    } else if (validScope.length > 0) {
         return validScope.join(' ');
     } else {
         return true;

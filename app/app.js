@@ -1,6 +1,3 @@
-/**
- * 设置默认环境变量
- */
 
 /**
  * 服务启动入口
@@ -15,7 +12,7 @@ import session from "koa2-cookie-session";
 import path from 'path';
 import { argv } from 'optimist';
 
-import { TestRouter, LoginRouter, OauthRouter ,ErrorRouter} from './router';
+import { TestRouter, LoginRouter, OauthRouter ,ErrorRouter,UserRouter} from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
 import { oauth } from './koa2-oauth';
@@ -161,11 +158,11 @@ app.use(koaBody());
 // app.use(bodyParser.text({type: 'application/graphql'}));
 log.debug("设置请求路由");
 
+app.use(ErrorRouter.routes());
 app.use(TestRouter.routes());
 app.use(LoginRouter.routes());
 app.use(OauthRouter.routes());
-app.use(ErrorRouter.routes());
-
+app.use(UserRouter.routes());
 
 /**
  * 默认404请求返回值

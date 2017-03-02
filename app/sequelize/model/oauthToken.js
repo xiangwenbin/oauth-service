@@ -31,7 +31,9 @@ var OauthToken = sequelize.define('OauthToken', {
     }
 }, {
     getterMethods: {
-        
+        accessTokenExpiresAt: function() {
+            return new Date(this.accessTokenExpiresTime);
+        }
     },
     validate: {
 

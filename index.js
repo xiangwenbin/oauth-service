@@ -1,4 +1,8 @@
 global.NODE_ENV=process.env.NODE_ENV = !process.env.NODE_ENV ? "dev" : process.env.NODE_ENV;
+// var ora = require('ora')
+// var spinner = ora('starting service ...')
+// spinner.start()
+console.log("starting service ...");
 /**
  * 使用babel支持es6语法
  */
@@ -8,3 +12,4 @@ require("babel-register");
  */
 require("babel-polyfill");
 require("./app/app.js");
+// spinner.stop()

@@ -25,17 +25,7 @@ const OauthRouter = router();
  *  
  */
 OauthRouter.get('/oauth/authorize', async(ctx, next) => {
-    // log.debug(ctx.session);
-    // //校验cliend_id
-    // let client = await ClientService.getClientByClientId(ctx.request.query.client_id).then((client) => {
-    //     return client == null ? null : client.get({
-    //         plain: true
-    //     });
-    // });
-    // if (!client) {
-    //     ctx.throw(401, '不存在该客户端');
-    //     return ;
-    // }
+    
     //验证缓存里是否存在用户认证信息
     let uuid = ctx.cookies.get("session:uuid");
     let uuidCache = uuid ? await redisClient.hgetallAsync(`session:${uuid}`).then((result) => {
@@ -61,21 +51,12 @@ OauthRouter.get('/oauth/authorize', async(ctx, next) => {
         return;
     }
 
-    // const client = db.clients.find((client) => {
-    //     return client.id === ctx.session.query.client_id;
-    // });
-
-    // if (!client) { ctx.throw(401, 'No such client'); }
     ctx.request.body = uuidCache;
-    // ctx.request.body.user_id = ctx.session.userId;
     return next();
 }, oauth.authorize({
     authenticateHandler: {
         handle: async(req, res) => {
 
-            // return db.users.find((user) => {
-            //     return user.id === req.body.user_id;
-            // });
             let user = await UserService.getUserById(req.body.userId).then((result) => {
                 return result == null ? null : result.get({
                     plain: true
