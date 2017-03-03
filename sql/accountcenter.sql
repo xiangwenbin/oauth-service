@@ -24,7 +24,7 @@ CREATE TABLE AccountCenter_UserInfo (
 CREATE TABLE AccountCenter_Client (
 	id BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT COMMENT 'id',
     secret VARCHAR(256) NOT NULL COMMENT '密钥',
-	grantType VARCHAR(256) NOT NULL DEFAULT 'authorization_code' COMMENT '授权类型',
+	grantType VARCHAR(256) NOT NULL DEFAULT 'authorization_code refresh_token' COMMENT '授权类型',
     clientId VARCHAR(64) NOT NULL COMMENT '客户端id',
 	clientName VARCHAR(64) NOT NULL COMMENT '客户端名',
     scope VARCHAR(64) NOT NULL DEFAULT 'all' COMMENT '申请的权限范围',
@@ -40,6 +40,7 @@ CREATE TABLE AccountCenter_OauthCode (
 	clientId BIGINT UNSIGNED NOT NULL  COMMENT '客户端id',
 	userId BIGINT UNSIGNED NOT NULL  COMMENT '用户id',
     expiresTime BIGINT UNSIGNED  NOT NULL COMMENT '过期时间',
+    scope VARCHAR(64)  COMMENT '申请的权限范围',
 	PRIMARY KEY  (id),
     UNIQUE KEY UK_OauthCode_Code (code)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='授权码';
