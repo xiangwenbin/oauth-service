@@ -1,0 +1,124 @@
+
+/* 复选框 */
+.el-checkbox {
+	.el-checkbox__inner {
+		border-radius: 2px;
+	}
+	.el-checkbox__input.is-checked {
+		.el-checkbox__inner {
+			border-color: #46aff3;
+		    background-color: #fff;
+			&:after {
+				border-color: #46aff3;
+			}
+		}
+	}
+}
+
+/* 对话框 */
+.el-dialog {
+	min-width: 700px;
+	.el-input.el-date-editor {
+		width: 100%;
+	}
+}
+
+/* 表单 */
+.el-form {
+	color: #696969;
+	.el-form-item__label {
+		color: #696969;
+		font-size: 16px;
+	}
+	.el-form-item__content {
+		font-size: 16px;
+	}
+}
+
+/* 表格 */
+.el-table.s-ht {
+	border: 0;
+	.el-table__header-wrapper {
+		th {
+			border-bottom: 0;
+			background-color: #dde4ec;
+			.cell {
+				color: #7c8ea2;
+				font-size: 16px;
+				background: none;
+			}
+		}
+	}
+	.el-table__body-wrapper {
+		color: #696969;
+		font-size: 14px;
+		tr {
+			height: 50px;
+		}
+		td {
+			border-bottom-color: #eee;
+		}
+		tr:last-child td {
+			border-bottom: 0;
+		}
+	}
+	.el-table__empty-block {
+		min-height: 120px;
+		.el-table__empty-text {
+			color: #696969;
+		}
+	}
+	.col-ops, .col-btns {
+		.cell {
+			padding-top: 6px;
+			padding-bottom: 6px;
+		}
+		.btn {
+			display: block;
+		    width: auto;
+		    font-size: 14px;
+		    border: 0px;
+		    background: none;
+		    padding: 0px;
+		    margin: 0px;
+		    outline: none;
+		    &:hover {
+		    	color: #1D8CE0;
+		    }
+		    &[disabled] {
+		    	color: #e1e1e1;
+		    	cursor: default;
+		    }
+		}
+	}
+	.col-ops .btn {
+	    color: #58B7FF;
+	    line-height: 20px;
+	}
+	.col-btns .btn {
+	    color: #696969;
+	    line-height: 28px;
+	    i {
+	    	display: inline-block;
+		    width: 16px;
+		    height: 16px;
+		    vertical-align: -2px;
+		    margin-right: 10px;
+		    background-repeat: no-repeat;
+	    }
+	}
+	&:before, &:after {
+		display: none;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+

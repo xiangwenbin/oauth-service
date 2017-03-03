@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>首页</title>
+  <link href="/dist/static/css/core.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
+  <style>
+    .m-error-404 {
+      width: 800px;
+      padding-top: 500px;
+      margin: 0px auto;
+      background-image: url(/images/bg_404.jpg);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 700px;
+    }
+    .m-error .backbtn {
+      color: #fff;
+      font-size: 16px;
+      border-radius: 3px;
+      background-color: #45b0f5;
+      padding: 10px 30px;
+    }
+  </style>
+</head>
+<body class="g-doc g-doc-bg">
+  <div class="g-hd">
+    <@topbar />
+  </div>
+  <div class="g-bd">
+     <div class="m-error m-error-404">
+       <a class="backbtn" href="/">返回首页</a>
+     </div>
+  </div>
+	<div class="g-ft">
+		<@footer />
+	</div>
+  <#noescape>
+    <script>
+     
+    </script>
+  </#noescape>
+</body>
+</html>

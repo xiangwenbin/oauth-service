@@ -1,0 +1,209 @@
+
+/* 页面顶部栏 */
+.m-topbar {
+  position: relative;
+  height: 100%;
+  background-color: #364151;
+  > div {
+    position: relative;
+    text-align: right;
+    padding: 9px 30px 0px 200px;
+    box-sizing: border-box;
+  }
+  .g-logo_top {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: #364151;
+  }
+  .userinfo {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 32px;
+    > * {
+      display: inline-block;
+    }
+    a, span {
+      color: #9ba3af;
+    }
+    > .valid {
+      position: relative;
+      padding-right: 20px;
+      img {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
+        margin-right: 3px;
+      }
+      &:after {
+        content: "";
+        position: absolute;
+        border: 0px solid transparent;
+        border-width: 6px 5px 0px 5px;
+        border-top-color: #999;
+        top: 12px;
+        right: 0px;
+      }
+      ul {
+        display: none;
+        position: absolute;
+        top: 32px;
+        right: 0px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        text-align: left;
+        min-width: 120px;
+        z-index: 100;
+        > li {
+          border-top: 1px solid #eee;
+          a {
+            display: block;
+            line-height: 30px;
+            padding: 0px 10px;
+            text-decoration: none;
+            &:hover {
+              background-color: #364151;
+              color: #fff;
+            }
+          }
+          &:first-child {
+            border-top: 0px;
+          }
+        }
+      }
+      &:hover > ul {
+        display: block;
+      }
+    }
+    > .invalid {
+      padding-right: 30px;
+      a {
+        margin-left: 25px;
+      }
+    }
+  }
+  .help {
+    display: inline-block;
+    padding: 0px 5px 0px 15px;
+    a {
+      display: inline-block;
+      width: 18px;
+      line-height: 18px;
+      text-align: center;
+      color: #9ba3af;
+      border: 1px solid #9ba3af;
+      border-radius: 100px;
+      background-color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      &:hover {
+        border-color: #333;
+        color: #333;
+      }
+    }
+  }
+  &.light {
+    background-color: #fff;
+  }
+  &.fixed > div {
+    width: 1200px;
+    margin: 0px auto;
+  }
+  &.fixed .g-logo_top {
+    background-position: left center;
+  }
+}
+
+
+/* 页面尾部 */
+.m-footer {
+  display: table;
+  width: 100%;
+  height: 100%;
+  color: #767676;
+  font-size: 14px;
+  text-align: center;
+  line-height: 26px;
+  box-sizing: border-box;
+  > div {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  a {
+    color: #767676;
+  }
+  &.dark {
+    color: #999;
+    background-color: #33383b;
+    a {
+      color: #999;
+    }
+  }
+}
+
+
+/* 个人中心左边导航栏 */
+.m-ucenter-nav {
+  .group {
+    padding-top: 20px;
+  }
+  .title {
+    font-size: 14px;
+    color: #77919c;
+    line-height: 40px;
+    padding: 0px 0px 0px 25px;
+  }
+  ul {
+    li {
+      a {
+        display: block;
+        position: relative;
+        color: #77919c;
+        font-size: 16px;
+        line-height: 40px;
+        padding: 0px 5px 0px 60px;
+        text-decoration: none;
+        i {
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          left: 25px;
+          top: 8px;
+          background-image: url("/images/icons_ucenter.png");
+          background-repeat: no-repeat;
+          background-position: 40px 0px;
+        }
+      }
+      &:hover {
+        background-color: #212e41;
+      }
+    }
+    li.active {
+      background-color: #212e41;
+    }
+    li.account i {
+      background-position: 2px -2px;
+    }
+    li.enterprise i {
+      background-position: 0px -26px;
+    }
+    li.order i {
+      background-position: 1px -50px;
+    }
+  }
+}
+
+
+// 地址选择组件
+.region-picker{
+    select {
+        height:36px;
+        border:1px solid #c0ccda;
+        border-radius:4px;
+    }
+}
+//错误页面
+.m-error{
+    font-size:16px;
+    text-align: center;
+}

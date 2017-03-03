@@ -1,0 +1,95 @@
+.u-input{
+    background:#fff;
+    border:1px solid #c0ccda;
+    border-radius:4px;
+    height:20px;line-height: 20px;
+    width:100%;
+    text-indent: 5px;
+    &:focus{
+        outline:0;
+    }
+}
+
+.u-radbox {
+    input {
+        display: none;
+    }
+    i {
+        display: inline-block;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        vertical-align: -3px;
+        margin-left: 3px;
+        &:before {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #999;
+            border-radius: 2px;
+            left: 2px;
+            top: 2px;
+        }
+        &:after {
+            content: " ";
+            position: absolute;
+            font-size: 14px;
+            line-height: 16px;
+            left: 1px;
+            top: 1px;
+        }
+    }
+    input:checked + i {
+        &:after {
+            content: "✓";
+        }
+    }
+    input[disabled] + i:before {
+        border-color: #eee;
+    }
+}
+
+.u-radbox + .u-radbox {
+    margin-left: 5px;
+}
+
+.u-loading{
+    text-align: center;
+    padding:50px;
+    i{
+        font-size: 30px;
+    }
+}
+
+/* 模块头部页面导航栏，模块名称 */
+.u-page-nav {
+    margin-bottom: 14px;
+    a {
+        color: #696969;
+        font-size: 20px;
+        line-height: 30px;
+    }
+}
+
+/* 模块头部按钮栏 */
+.u-page-toolbar {
+    text-align: right;
+    margin-bottom: 10px;
+    > button {
+        margin-left: 10px;
+        &:first-child {
+            margin-left: 0px;
+        }
+    }
+}
+
+.u-page-nav + .u-page-toolbar {
+    margin-top: -35px;
+}
+
+.u-page-content {
+    background-color: #fff;
+    padding: 20px 30px;
+}
+

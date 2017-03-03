@@ -5,4 +5,7 @@
 /logs/*.log
 /logs/*.log.*
 /yarn.lock
+/public/node_modules
+/public/static/dist
+/public/template
 

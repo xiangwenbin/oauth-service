@@ -1,4 +1,3 @@
-
 /**
  * 服务启动入口
  * convert 包的作用 转换过时的generator中间件到anync中间件，如kao-static,koa-logger 
@@ -12,7 +11,7 @@ import session from "koa2-cookie-session";
 import path from 'path';
 import { argv } from 'optimist';
 
-import { TestRouter, LoginRouter, OauthRouter ,ErrorRouter,UserRouter} from './router';
+import { TestRouter, LoginRouter, OauthRouter, ErrorRouter, UserRouter } from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
 import { oauth } from './koa2-oauth';
@@ -21,8 +20,8 @@ import { oauth } from './koa2-oauth';
 import log4js from './log4js';
 import co from 'co';
 import render from 'koa-ejs';
-
-
+// import nunjuck from 'koa2-nunjucks/lib/index.js';
+import nunjucks from 'nunjucks';
 
 const app = new Koa();
 const log = log4js.getLogger("DEBUG");
@@ -60,7 +59,7 @@ log.debug("启动目录:" + __dirname);
  * 
  */
 log.debug("设置静态文件目录:/public");
-app.use(convert(koaStatic('public')));
+app.use(convert(koaStatic('public/static')));
 
 
 
@@ -73,19 +72,54 @@ app.use(session({
     expires: 3, //default 7 
     path: "/" //default "/" 
 }));
-
+// path.resolve(__dirname, '../public/template')
 /**
  * 设置ejs模版
  */
-log.debug("设置ejs模版");
-render(app, {
-    root: path.join(__dirname, 'template'),
-    layout: false,
-    viewExt: 'tpl',
-    cache: false,
-    debug: true
-});
-app.context.render = co.wrap(app.context.render);
+// log.debug("设置ejs模版");
+// render(app, {
+//     // root: path.join(__dirname, 'template'),
+//     root:path.resolve(__dirname, '../public/template'),
+//     layout: false,
+//     viewExt: 'ejs',
+//     cache: false,
+//     debug: true
+// });
+// app.context.render = co.wrap(app.context.render);
+
+
+
+const nj = (config = {}) => {
+  let { debug = false, ext = 'html', path = './', njConfig = {} } = config
+  let env = nunjucks.configure(path, njConfig)
+  return async(ctx, next) => {
+    ctx.render = (file, data = {}) => {
+      return new Promise((resolve, reject) => {
+        env.render(file + '.' + ext, data, (error, result) => {
+          if (error) {
+            if (debug) {
+              console.log(error)
+            }
+            result = error.message
+          }
+          ctx.type = 'text/html; charset=utf-8'
+          ctx.body = result
+          resolve()
+        })
+      })
+    }
+    await next()
+  };
+};
+
+app.use(nj({
+    debug: true,
+    ext: 'tpl',
+    path: path.resolve(__dirname, '../public/template'),
+    njConfig: {
+        watch: false
+    }
+}))
 
 /**
  * 设置oauth2 
@@ -108,7 +142,7 @@ app.use(async(ctx, next) => {
             ctx.redirect(`/error/${err.status}`);
         } else {
 
-            ctx.body = JSON.stringify({ code: err.status, msg: err.message||'服务器异常' });
+            ctx.body = JSON.stringify({ code: err.status, msg: err.message || '服务器异常' });
         }
     }
 });
