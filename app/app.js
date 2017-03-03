@@ -104,11 +104,11 @@ app.use(async(ctx, next) => {
     } catch (err) {
         log.error(err);
         err.status = err.statusCode || err.status || 500;
-        // throw err;
         if (!ctx.isAjax) {
             ctx.redirect(`/error/${err.status}`);
         } else {
-            ctx.body = JSON.stringify({ code: err.status, msg: JSON.stringify(err) });
+
+            ctx.body = JSON.stringify({ code: err.status, msg: err.message||'服务器异常' });
         }
     }
 });

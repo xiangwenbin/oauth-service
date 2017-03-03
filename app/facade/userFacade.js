@@ -23,6 +23,20 @@ class UserFacade {
             });
         });
     }
+    
+    /**
+     * 通过 用户认证信息查询用户
+     * @param {User} user 
+     */
+    static getUserByCredentials(user) {
+        if(user.username){
+            return UserService.getUserByUserNameAndPassword(user);
+        }else if(user.mobile){
+            return UserService.getUserByMobileAndPassword(user);
+        }else if(user.email){
+            return UserService.getUserByEmailAndPassword(user);
+        }
+    }
 }
 
 export default UserFacade;

@@ -13,6 +13,5 @@ ErrorRouter.get('/error/:error', async(ctx, next) => {
 });
 
 
-// ErrorRouter.get('/token', app.oauth.grant());
 
 export default ErrorRouter;

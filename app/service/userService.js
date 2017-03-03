@@ -44,6 +44,32 @@ class UserService {
         });
     }
 
+    /**
+     * 通过email，密码查找用户
+     */
+    static getUserByEmailAndPassword({ email, password }) {
+        let user=User.build({email,password}).get({plain: true})
+        return User.findOne({
+            where: {
+                email: user.email,
+                password: user.password
+            }
+        });
+    }
+
+    /**
+     * 通过mobile，密码查找用户
+     */
+    static getUserByMobileAndPassword({ mobile, password }) {
+        let user=User.build({mobile,password}).get({plain: true})
+        return User.findOne({
+            where: {
+                mobile: user.mobile,
+                password: user.password
+            }
+        });
+    }
+
 
     /**
      * 通过id 修改用户

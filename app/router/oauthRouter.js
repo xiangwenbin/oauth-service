@@ -50,7 +50,7 @@ OauthRouter.get('/oauth/authorize', async(ctx, next) => {
         ctx.redirect('/login');
         return;
     }
-
+    
     ctx.request.body = uuidCache;
     return next();
 }, oauth.authorize({

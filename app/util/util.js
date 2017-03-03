@@ -2,6 +2,18 @@ import _ from 'lodash';
 import UUID from 'node-uuid';
 class Util {
     
+    static getSuccJsonResult(data){
+        return {
+            code:200,
+            data:data
+        }
+    }
+    static getErrorJsonResult(msg,code=400){
+        return {
+            code:code,
+            msg:msg
+        }
+    }
     static generateUUID(){
         let args = [...arguments];
         return UUID.v4(...args);

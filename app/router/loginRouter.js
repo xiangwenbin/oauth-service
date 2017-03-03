@@ -1,56 +1,46 @@
 import router from 'koa-router';
-import db from '../koa2-oauth/db';
 import Util from '../util/util';
 import log4js from '../log4js';
 const log = log4js.getLogger('DEBUG');
 const LoginRouter = router();
 import { UserService } from '../service';
+import { UserFacade} from '../facade';
 import redisClient from "../redis/redis";
-
+import REGULAR from "../const/regular";
 /**
- * 登陆路由
+ * 登陆页
  */
 LoginRouter.get('/login', async(ctx, next) => {
-
     await ctx.render("login", { msg: 'hello world' });
-    // ctx.body = "getTest body";
+   
 });
+
 /**
- * 登陆验证
+ * 表单同步提交登陆验证
  */
 LoginRouter.post('/login', async(ctx) => {
-    const creds = ctx.request.body;
-    log.debug(`Authenticating ${creds.username}`);
+    const credentials = ctx.request.body;
+    log.debug(`Authenticating ${credentials.username}`);
 
-    // const user = db.users.find((user) => {
-    //     return user.username === creds.username &&
-    //         user.password === creds.password;
-    // });
-    let user = await UserService.getUserByUserNameAndPassword(creds).then((result) => {
+    let user = await UserService.getUserByUserNameAndPassword(credentials).then((result) => {
         return result == null ? null : result.get({
             plain: true
         });
     });
     if (!user) {
-        log.debug('Invalid credentials');
+        log.debug('用戶名密码错误');
         ctx.redirect('/login?valCode=1');
         return;
     }
 
-
-
-    log.debug(`Success!`);
-
     let uuid = ctx.cookies.get("session:uuid");
     let uuidCache = await redisClient.hgetallAsync(`session:${uuid}`).then((result) => {
-        log.debug(`cache session:${uuid}`,result);
+        log.debug(`cache session:${uuid}`, result);
         return result;
     });
     uuidCache.userId = user.id;
     redisClient.hmset(`session:${uuid}`, uuidCache);
-    // ctx.session.userId = user.id;
 
-    // If we were sent here from grant page, redirect back
     if (uuidCache.client_id) {
         log.debug('Redirecting back to grant dialog');
         ctx.redirect('/oauth/authorize');
@@ -60,6 +50,46 @@ LoginRouter.post('/login', async(ctx) => {
     // ctx.throw("400","clientId is null");
     // If not do whatever you fancy
     ctx.redirect('/');
+});
+
+/**
+ * 异步登录验证 
+ * @param{Object} credentials
+ */
+LoginRouter.post('/login/verify', async(ctx) => {
+    const requestBody = ctx.request.body;
+    let username = requestBody.username;
+    let credentials = {
+        password: requestBody.password
+    };
+    //用户名校验
+    if (REGULAR.MOBILE.test(username)) {
+        credentials.mobile = username;
+    } else if (REGULAR.EMAIL.test(username)) {
+        credentials.email = username;
+    } else if (REGULAR.USERNAME.test(username)) {
+        credentials.username = username;
+    } else {
+        return ctx.throw(400, "用户名不合法");
+    }
+
+    let user = await UserFacade.getUserByCredentials(credentials).then((result) => {
+        return result == null ? null : result.get({
+            plain: true
+        });
+    });
+    if (!user) {
+        return ctx.throw(400, "用户名密码错误");
+    }
+
+    let uuid = ctx.cookies.get("session:uuid");
+    let uuidCache = await redisClient.hgetallAsync(`session:${uuid}`).then((result) => {
+        return result;
+    });
+    uuidCache.userId = user.id;
+    redisClient.hmset(`session:${uuid}`, uuidCache);
+    return ctx.body = JSON.stringify(Util.getSuccJsonResult("succ"));
+    
 });
 
 
