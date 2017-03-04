@@ -63,12 +63,12 @@ module.exports = {
                 }
             },
             {
-                test: /\.ftl$/,
+                test: /\.njk$/,
                 loader: 'underscore-template',
                 query: {
-                    interpolate: '\\{\\{(.+?)\\}\\}',
-                    evaluate: '\\{%([\\s\\S]+?)%\\}',
-                    escape: '\\{\\{\\{(.+?)\\}\\}\\}'
+                    interpolate: '\\$\\{(.+?)\\}',
+                    evaluate: '\\<#([\\s\\S]+?)\\>',
+                    escape: '\\$\\{\\{(.+?)\\}\\}\\'
                 }
             }
         ]

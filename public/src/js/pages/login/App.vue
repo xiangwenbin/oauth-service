@@ -1,24 +1,26 @@
 <template>
-  <div class="m-login">
-    <el-form class="demo-ruleForm card-box loginform" :model="ruleForm" :rules="rules" ref="ruleForm" 
-      label-position="left" label-width="0px">
-      <h3 class="title">用户登录</h3>
-      <el-form-item class="username" prop="username">
-        <input ref="nameIpt" type="text" v-model="ruleForm.username" placeholder="请输入您的手机号"
-          @keydown.enter="onEnterHandler('name')" @blur="onBlurHandler('name')" />
-      </el-form-item>
-      <el-form-item class="password" prop="password">
-        <input ref="pwdIpt" type="password" v-model="ruleForm.password" placeholder="请输入密码"
-          @keydown.enter="onEnterHandler('pwd')" @blur="onBlurHandler('pwd')" />
-      </el-form-item>
-      <el-form-item class="repwd">
-        <a class="lnk" href="/resetPassword?t=1">忘记密码？</a>
-      </el-form-item>
-      <el-form-item class="submit">
-        <el-button type="info" @click.native.prevent="handleSubmit">登录</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+    <div class="m-login">
+      <div class="">
+        <el-form class="demo-ruleForm card-box loginform" :model="ruleForm" :rules="rules" ref="ruleForm" 
+          label-position="left" label-width="0px">
+          <h3 class="title">用户登录</h3>
+          <el-form-item class="username" prop="username">
+            <input ref="nameIpt" type="text" v-model="ruleForm.username" placeholder="请输入您的手机号"
+              @keydown.enter="onEnterHandler('name')" @blur="onBlurHandler('name')" />
+          </el-form-item>
+          <el-form-item class="password" prop="password">
+            <input ref="pwdIpt" type="password" v-model="ruleForm.password" placeholder="请输入密码"
+              @keydown.enter="onEnterHandler('pwd')" @blur="onBlurHandler('pwd')" />
+          </el-form-item>
+          <el-form-item class="repwd">
+            <a class="lnk" href="/resetPassword?t=1">忘记密码？</a>
+          </el-form-item>
+          <el-form-item class="submit">
+            <el-button type="info" @click.native.prevent="handleSubmit">登录</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -94,76 +96,78 @@
 </script>
 
 <style lang="scss">
-  .m-login {
-    position: relative;
-    width: 1000px;
-    height: 600px;
-    margin: 0px auto;
-    background-image: url(/images/bg_login.jpg);
-    background-repeat: no-repeat;
-    background-position: 0px 68px;
-    background-size: 600px;
-    .loginform {
-      position: absolute;
-      width: 400px;
-      top: 170px;
-      right: 0px;
-      border: 1px solid #efeff5;
-      background-color: #fff;
-      padding: 30px 25px 50px;
-      box-sizing: border-box;
-      .title {
-        color: #46aff3;
-        font-size: 26px;
-        font-weight: normal;
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .el-form-item {
-        margin-bottom: 35px;
-        .el-form-item__content {
-          input {
+.g-bd{
+    display: table;
+   .m-login {
+      width:100%;
+      display: table-cell;
+      
+      vertical-align: middle;
+    > div{
+      
+      .loginform {
+          width: 400px;
+          margin:30px auto;
+          border: 1px solid #efeff5;
+          background-color: #fff;
+          padding: 30px 25px 50px;
+          box-sizing: border-box;
+          .title {
+            color: #46aff3;
+            font-size: 26px;
+            font-weight: normal;
+            text-align: center;
+            margin-bottom: 40px;
+          }
+          .el-form-item {
+            margin-bottom: 35px;
+            .el-form-item__content {
+              input {
+                width: 100%;
+                height: 50px;
+                font-size: 18px;
+                border: 1px solid #e5e5e5;
+                border-radius: 2px;
+                box-sizing: border-box;
+                padding-left: 50px;
+              }
+              &:before {
+                content: "";
+                position: absolute;
+                width: 32px;
+                height: 32px;
+                top: 8px;
+                left: 8px;
+                background-repeat: no-repeat;
+              }
+            }
+            &.username .el-form-item__content:before {
+              background-image: url(/images/icons_auth.png);
+              background-position: 0px -1px;
+            }
+            &.password .el-form-item__content:before {
+              background-image: url(/images/icons_auth.png);
+              background-position: 0px -33px;
+            }
+            &:last-child {
+              margin-bottom: 0px;
+            }
+          }
+          .repwd {
+            margin-top: -35px;
+            text-align: right;
+          }
+          .submit .el-button {
             width: 100%;
-            height: 50px;
-            font-size: 18px;
-            border: 1px solid #e5e5e5;
+            height: 60px;
+            font-size: 20px;
+            letter-spacing: 10px;
             border-radius: 2px;
-            box-sizing: border-box;
-            padding-left: 50px;
-          }
-          &:before {
-            content: "";
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            top: 8px;
-            left: 8px;
-            background-repeat: no-repeat;
           }
         }
-        &.username .el-form-item__content:before {
-          background-image: url(/images/icons_auth.png);
-          background-position: 0px -1px;
-        }
-        &.password .el-form-item__content:before {
-          background-image: url(/images/icons_auth.png);
-          background-position: 0px -33px;
-        }
-        &:last-child {
-          margin-bottom: 0px;
-        }
-      }
-      .repwd {
-        margin-top: -35px;
-        text-align: right;
-      }
-      .submit .el-button {
-        width: 100%;
-        height: 60px;
-        font-size: 20px;
-        letter-spacing: 10px;
-        border-radius: 2px;
-      }
     }
+    
   }
+}
+ 
 </style>

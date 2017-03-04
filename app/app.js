@@ -114,7 +114,7 @@ const nj = (config = {}) => {
 
 app.use(nj({
     debug: true,
-    ext: 'tpl',
+    ext: 'njk',
     path: path.resolve(__dirname, '../public/template'),
     njConfig: {
         watch: false

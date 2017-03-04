@@ -1,0 +1,24 @@
+{% macro topbar(style="dark") %}
+<div class="m-topbar {{style}}">
+  <div>
+    <a class="g-logo_top" href="/"></a>
+      
+      <div class="help" title="帮助"><a>?</a></div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro footer(style="") %}
+<div class="m-footer {{style}}">
+  <div>
+    <div>
+      <a href="#" target="_blank" rel="nofollow" class="">About ZH</a> -
+      <a href="#" target="_blank" rel="nofollow" class="">公司简介</a> -
+      <a href="#" target="_blank" rel="nofollow" class="">招聘信息</a> -
+      <a href="#" target="_blank" rel="nofollow" class="">相关法律</a> -
+      <span>增值电信业务经营许可证：<a href="http://www.miitbeian.gov.cn/" target="_blank" class="">xx-xxx</a></span>
+    </div>
+    <div>中汇集团版权所有&nbsp;&nbsp;©&nbsp;&nbsp;2016-2017</div>
+  </div>
+</div>
+{% endmacro %}

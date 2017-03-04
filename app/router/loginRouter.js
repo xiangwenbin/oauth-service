@@ -11,7 +11,7 @@ import REGULAR from "../const/regular";
  * 登陆页
  */
 LoginRouter.get('/login', async(ctx, next) => {
-    await ctx.render("login", { msg: 'hello world' });
+    await ctx.render("pages/login", { msg: 'hello world' });
    
 });
 

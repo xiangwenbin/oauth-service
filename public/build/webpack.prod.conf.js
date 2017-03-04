@@ -111,8 +111,8 @@ if (env.NODE_ENV == "production") {
         }))
 }
 
-var pages = utils.getEntries('./src/template/**/*.ftl');
-var folders = utils.getEntriesFolder('./src/template/**/*.ftl');
+var pages = utils.getEntries('./src/template/**/*.njk');
+var folders = utils.getEntriesFolder('./src/template/**/*.njk');
 
 console.log(folders);
 
@@ -122,7 +122,7 @@ for (var page in pages) {
     });
         // 配置生成的html文件，定义路径等
     var conf = {
-            filename: folders[page] + '/' + page + '.ftl',
+            filename: folders[page] + '/' + page + '.njk',
             template: pages[page], //模板路径
             // inject: folders[page].indexOf("pages")>-1?true:false,
             inject: false,
