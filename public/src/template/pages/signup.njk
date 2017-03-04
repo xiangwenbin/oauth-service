@@ -1,0 +1,26 @@
+{% import "../common/macro.njk" as mco %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>用户注册</title>
+  <link href="/dist/css/core.css?${webpack.hash}" rel="stylesheet" type="text/css"/>
+  <link href="/dist/css/signup.css?${webpack.hash}" rel="stylesheet" type="text/css"/>
+
+</head>
+<body class="g-doc g-doc-bg">
+	<div class="g-hd">
+      {{mco.topbar()}}
+  </div>
+  <div class="g-bd">
+    <div id="app"></div>
+  </div>
+	<div class="g-ft">
+		{{mco.footer()}}
+	</div>
+
+  <script type="text/javascript" src="/dist/js/vendor.js?${webpack.hash}"></script>
+  <script type="text/javascript" src="/dist/js/core.js?${webpack.hash}}"></script>
+  <script type="text/javascript" src="/dist/js/signup.js?${webpack.hash}"></script>
+</body>
+</html>

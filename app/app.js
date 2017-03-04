@@ -11,7 +11,7 @@ import session from "koa2-cookie-session";
 import path from 'path';
 import { argv } from 'optimist';
 
-import { TestRouter, LoginRouter, OauthRouter, ErrorRouter, UserRouter } from './router';
+import { TestRouter, LoginRouter, OauthRouter, ErrorRouter, UserRouter ,SignUpRouter} from './router';
 import koaBody from './filter/koa-body';
 import bodyParser from 'body-parser';
 import { oauth } from './koa2-oauth';
@@ -33,7 +33,7 @@ if (!argv.ip) {
     var os = require('os');
     var ifaces = os.networkInterfaces();
     for (var dev in ifaces) {
-        ifaces[dev].forEach(function(details) {
+        ifaces[dev].forEach(function (details) {
             //获取本地无线的ip
             if (details.family == 'IPv4' && (dev.toLowerCase() == "wlan")) {
                 argv.ip = details.address;
@@ -90,26 +90,26 @@ app.use(session({
 
 
 const nj = (config = {}) => {
-  let { debug = false, ext = 'html', path = './', njConfig = {} } = config
-  let env = nunjucks.configure(path, njConfig)
-  return async(ctx, next) => {
-    ctx.render = (file, data = {}) => {
-      return new Promise((resolve, reject) => {
-        env.render(file + '.' + ext, data, (error, result) => {
-          if (error) {
-            if (debug) {
-              console.log(error)
-            }
-            result = error.message
-          }
-          ctx.type = 'text/html; charset=utf-8'
-          ctx.body = result
-          resolve()
-        })
-      })
-    }
-    await next()
-  };
+    let { debug = false, ext = 'html', path = './', njConfig = {} } = config
+    let env = nunjucks.configure(path, njConfig)
+    return async (ctx, next) => {
+        ctx.render = (file, data = {}) => {
+            return new Promise((resolve, reject) => {
+                env.render(file + '.' + ext, data, (error, result) => {
+                    if (error) {
+                        if (debug) {
+                            console.log(error)
+                        }
+                        result = error.message
+                    }
+                    ctx.type = 'text/html; charset=utf-8'
+                    ctx.body = result
+                    resolve()
+                })
+            })
+        }
+        await next()
+    };
 };
 
 app.use(nj({
@@ -132,7 +132,7 @@ app.oauth = oauth;
  * 异常处理
  * 
  */
-app.use(async(ctx, next) => {
+app.use(async (ctx, next) => {
     try {
         await next();
     } catch (err) {
@@ -161,7 +161,7 @@ app.use(convert(logger()));
  * 前置过滤器 
  * 
  */
-app.use(async(ctx, next) => {
+app.use(async (ctx, next) => {
     console.log("session:", ctx.session);
     await next();
 });
@@ -170,7 +170,7 @@ app.use(async(ctx, next) => {
  * header处理
  * X-Requested-With 异步接口标示
  */
-app.use(async(ctx, next) => {
+app.use(async (ctx, next) => {
     // log.debug(ctx.header);
     if (ctx.header["X-Requested-With".toLowerCase()] == "XMLHttpRequest") {
         ctx.isAjax = true;
@@ -197,13 +197,21 @@ app.use(TestRouter.routes());
 app.use(LoginRouter.routes());
 app.use(OauthRouter.routes());
 app.use(UserRouter.routes());
+app.use(SignUpRouter.routes());
+
 
 /**
  * 默认404请求返回值
  * 
  */
 app.use((ctx) => {
-    ctx.body = JSON.stringify({ code: 404, data: 'null' });
+
+    if (!ctx.isAjax) {
+        ctx.redirect(`/error/404`);
+    } else {
+        ctx.body = JSON.stringify({ code: 404, msg: '404' });
+    }
+
 });
 
 

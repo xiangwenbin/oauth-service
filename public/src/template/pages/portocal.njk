@@ -1,13 +1,11 @@
-<@compress single_line=true>
-<#escape x as x?html>
-<#include "../common/macro.ftl">
+{% import "../common/macro.njk" as mco %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>用户隐私保护声明</title>
-  <link href="/dist/static/css/core.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
-  <link href="/dist/static/css/index.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
+  <link href="/dist/css/core.css?${webpack.hash}" rel="stylesheet" type="text/css"/>
+  
   <style>
   .m-portocal { background-color: #f7fafc; }
   .m-portocal .m-topbar { background-color: #05182b; }
@@ -25,7 +23,7 @@
 </head>
 <body class="g-doc m-portocal">
   <div class="g-hd">
-    <@topbar fixed=true showuser=false/>
+     {{mco.topbar()}}
   </div>
   <div class="g-bd">
     <header>
@@ -108,9 +106,7 @@
     </section>
   </div>
 	<div class="g-ft">
-		<@footer style="dark"/>
+    {{mco.footer(dark)}}
 	</div>
 </body>
 </html>
-</#escape>
-</@compress>
