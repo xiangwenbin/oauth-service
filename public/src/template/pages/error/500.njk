@@ -1,13 +1,10 @@
-<@compress single_line=true>
-<#escape x as x?html>
-<#include "../../common/macro.ftl">
+{% import "../../common/macro.njk" as mco %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>首页</title>
-  <link href="/dist/static/css/core.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
-  <link href="/dist/static/css/index.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
+  <link href="/dist/css/core.css?${webpack.hash}" rel="stylesheet" type="text/css"/>
   <style>
     .m-error-500 {
       width: 800px;
@@ -29,7 +26,7 @@
 </head>
 <body class="g-doc g-doc-bg">
   <div class="g-hd">
-    <@topbar />
+    {{mco.topbar()}}
   </div>
   <div class="g-bd">
      <div class="m-error m-error-500">
@@ -37,14 +34,8 @@
      </div>
   </div>
 	<div class="g-ft">
-		<@footer />
+		{{mco.footer()}}
 	</div>
-  <#noescape>
-    <script>
-     
-    </script>
-  </#noescape>
 </body>
 </html>
-</#escape>
-</@compress>
+

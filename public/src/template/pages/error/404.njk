@@ -1,9 +1,10 @@
+{% import "../../common/macro.njk" as mco %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>首页</title>
-  <link href="/dist/static/css/core.css?{{webpack.hash}}" rel="stylesheet" type="text/css"/>
+  <link href="/dist/css/core.css?${webpack.hash}" rel="stylesheet" type="text/css"/>
   <style>
     .m-error-404 {
       width: 800px;
@@ -25,7 +26,7 @@
 </head>
 <body class="g-doc g-doc-bg">
   <div class="g-hd">
-    <@topbar />
+    {{mco.topbar()}}
   </div>
   <div class="g-bd">
      <div class="m-error m-error-404">
@@ -33,12 +34,8 @@
      </div>
   </div>
 	<div class="g-ft">
-		<@footer />
+		{{mco.footer()}}
 	</div>
-  <#noescape>
-    <script>
-     
-    </script>
-  </#noescape>
+ 
 </body>
 </html>

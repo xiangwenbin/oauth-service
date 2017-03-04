@@ -9,7 +9,9 @@ const log = log4js.getLogger('DEBUG');
  * 错误页面
  */
 ErrorRouter.get('/error/:error', async(ctx, next) => {
+    let message=ctx.request.body||'';
     ctx.body = ctx.params.error;
+    await ctx.render(`pages/error/${ctx.params.error}`, { message: message});
 });
 
 
