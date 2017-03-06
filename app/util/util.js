@@ -26,7 +26,7 @@ class Util {
         if (ctx) {
             return {
                 'Cookie': ctx.get("Cookie"),
-                'Authorization': ctx.get("Authorization") || (ctx.session.loginRes ? tx.session.token_type + " " + tx.session.access_token : ''),
+                'Authorization': ctx.get("Authorization") ||"",
             }
         } else {
             return {

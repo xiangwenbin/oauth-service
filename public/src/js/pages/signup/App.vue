@@ -2,6 +2,9 @@
   <div class="m-register">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="right" label-width="150px">
       <h3 class="title">用户注册</h3>
+      <el-form-item prop="nickname"  label="昵称">
+        <el-input type="text" v-model="ruleForm.nickname"  placeholder="请输入您的昵称"></el-input>
+      </el-form-item>
       <el-form-item prop="username"  label="手机号">
         <el-input type="text" v-model="ruleForm.username"  placeholder="请输入您的手机号"></el-input>
       </el-form-item>
@@ -40,16 +43,7 @@
   import Utils from '../../util/util';
   import Request from '../../util/request';
 
-  var onSubmitResult = function (result) {
-    if (result.code == 0 || result.code == 200) {
-      this.$message({message: "注册成功", type: "success", duration: 2000, onClose: () => {
-        window.location.href = Utils.getUrlQueryParam("redirect") || ("/login?u=" + this.ruleForm.username);
-      }});
-    }
-    else {
-      this.$message({message: (result.msg || "登录错误！"), type: "error", duration: 2000});
-    }
-  };
+
 
   export default {
     props: ['options'],
@@ -82,10 +76,11 @@
           username: "", password: "", repassword: "", valCode: "", prototype: true
         },
         rules: {
-          username: [{validator: validator, trigger: "blur", empty: "登录手机号码不能为空"}],
-          password: [{validator: validator, trigger: "blur", empty: "密码不能为空"}],
-          repassword: [{validator: validator, trigger: "blur", empty: "确认密码不能为空"}],
-          valCode: [{validator: validator, trigger: "blur", empty: "短信验证码不能为空"}]
+            nickname: [{validator: validator, trigger: "blur", empty: "昵称不能为空"}],
+            username: [{validator: validator, trigger: "blur", empty: "登录手机号码不能为空"}],
+            password: [{validator: validator, trigger: "blur", empty: "密码不能为空"}],
+            repassword: [{validator: validator, trigger: "blur", empty: "确认密码不能为空"}],
+            valCode: [{validator: validator, trigger: "blur", empty: "短信验证码不能为空"}]
         },
         btnValue: "获取验证码"
       };
@@ -103,16 +98,21 @@
         this.$refs.ruleForm.validateField("username", (err) => {
           if (!err) {
             // 发送短信验证码
-            Request.get("/SMS", {params: {mobile: mobile}}).then(() => {
-              let countdown = 60; // 倒计时
-              this.btnValue = `${countdown}s后可重新获取`;
-              var timerId = window.setInterval(() => {
-                this.btnValue = `${--countdown}s后可重新获取`;
-                if (countdown <= 0) {
-                  window.clearInterval(timerId);
-                  this.btnValue = "重新获取";
+            Request.get(`/signup/sendCode/${mobile}`, {}).then((result) => {
+                if(result.code==200){
+                    let countdown = 60; // 倒计时
+                    this.btnValue = `${countdown}s后可重新获取`;
+                    var timerId = window.setInterval(() => {
+                        this.btnValue = `${--countdown}s后可重新获取`;
+                        if (countdown <= 0) {
+                            window.clearInterval(timerId);
+                            this.btnValue = "重新获取";
+                        }
+                    }, 1000);
+                }else{
+                    this.$message({message: result.msg, type: "error", duration: 2000});
                 }
-              }, 1000);
+              
             })
             .catch((e) => {
               this.$message({message: e.msg, type: "error", duration: 2000});
@@ -129,13 +129,20 @@
           if (valid) {
             if (this.ruleForm.prototype) {
               var params = {
-                mobile: this.ruleForm.username, 
-                loginpassword: this.ruleForm.password,
-                checkcode: this.ruleForm.valCode
+                    nickname:this.ruleForm.nickname,
+                    mobile: this.ruleForm.username, 
+                    password: this.ruleForm.password,
+                    code: this.ruleForm.valCode
               };
-              Request.post("/addzhusersubmit", params).then((result) => {
+              Request.post("/signup/mobile", params).then((result) => {
                 // console.log("=====>", result);
-                onSubmitResult.call(this, result);
+                if (result.code == 200) {
+                    this.$message({message: "注册成功", type: "success", duration: 2000, onClose: () => {
+                        window.location.href = Utils.getUrlQueryParam("redirect") || "/";
+                    }});
+                }else {
+                    this.$message({message: (result.msg || "登录错误！"), type: "error", duration: 2000});
+                }
               })
               .catch((e) => {
                 this.$message({message: e.msg, type: "error", duration: 2000});

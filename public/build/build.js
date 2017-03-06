@@ -16,6 +16,7 @@ spinner.start()
 
 var assetsPath = path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
 rm('-rf', assetsPath)
+rm('-rf', path.join(config.build.assetsRoot,'/template'))
 mkdir('-p', assetsPath)
 // cp('-R', 'static/*', assetsPath)
 // cp('-R', 'images/*', assetsPath)

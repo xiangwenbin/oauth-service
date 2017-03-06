@@ -5,6 +5,9 @@ default:
     mservice:
         ip: 127.0.0.1
 dev:
+    smsservice:
+        host: 10.0.101.12
+        port: 8080
     server:
         port: 8100
     datasource:
