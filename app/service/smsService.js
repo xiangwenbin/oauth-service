@@ -8,11 +8,15 @@ let baseUrl=`http://${SMS.host}:${SMS.port}`;
  * 短信服务
  */
 class SMSService {
-    // static baseUrl=`:/${SMS.host}:${SMS.port}`;
+    /**
+     * 手机号注册 验证码发送
+     * @param {String} mobile 
+     */
     static sendCode(mobile) {
         let options = Util.getDefaultHeads();
          _.assign(options,{
-            uri:`${baseUrl}/sendCode/${mobile}`
+            json: true,
+            uri:`${baseUrl}/sendCode/signup/${mobile}`
         })
        
         return rp(options).then(
@@ -20,6 +24,25 @@ class SMSService {
                 return jsonBody;
             }
         )
+    }
+
+    /**
+     * 
+     * 验证码验证
+     * @param {String} mobile 
+     * @param {String} code 
+     */
+    static valCode(mobile,code) {
+        let options = Util.getDefaultHeads();
+         _.assign(options,{
+            json: true,
+            uri:`${baseUrl}/check/${mobile}/${code}`
+        })
+        return rp(options).then(
+            (jsonBody) => {
+                return jsonBody;
+            }
+        );
     }
 }
 export default SMSService;

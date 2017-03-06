@@ -70,6 +70,18 @@ class UserService {
         });
     }
 
+    /**
+     * 通过mobile查找用户
+     */
+    static getUserByMobile(mobile) {
+        // let user=User.build({mobile}).get({plain: true})
+        return User.findOne({
+            where: {
+                mobile: mobile
+            }
+        });
+    }
+
 
     /**
      * 通过id 修改用户

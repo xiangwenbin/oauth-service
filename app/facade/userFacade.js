@@ -11,6 +11,7 @@ class UserFacade {
                 let _u = u.get({
                     plain: true
                 });
+                delete _u.password;
                 let _ui = user.userInfo || {};
                 _ui.userId = _u.id;
                 _ui = await UserInfoService.createUserInfo(_ui).then((ui) => {

@@ -49,7 +49,7 @@
     props: ['options'],
     data () {
       var validator = (rule, value, callback) => {
-        if (value.replace(/\s*/g, "").length === 0) {
+        if (!value||value.replace(/\s*/g, "").length === 0) {
           return callback(rule.empty);
         }
         else if (rule.field === "username") {
