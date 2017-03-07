@@ -28,14 +28,6 @@
   import Utils from '../../util/util';
   import Request from '../../util/request';
 
-  var onSubmitResult = function (result) {
-    if (result.code == 0 || result.code == 200) {
-      window.location.href = Utils.getUrlQueryParam('redirect') || "/index";
-    }
-    else {
-      this.$message({message: (result.msg || "登录错误!"), type: "error", duration: 2000});
-    }
-  };
 
   export default {
     props:['options'],
@@ -71,11 +63,16 @@
       handleSubmit (e) {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            Request.post('/loginsubmit', {
-              mobile: this.ruleForm.username,
-              loginpassword: this.ruleForm.password
+            Request.post('/login/verify', {
+              username: this.ruleForm.username,
+              password: this.ruleForm.password
             }).then((result)=>{
-              onSubmitResult.call(this, result);
+                if (result.code == 200) {
+                    window.location.href = Utils.getUrlQueryParam('redirect') || "/oauth/authorize";
+                }
+                else {
+                    this.$message({message: (result.msg || "登录错误!"), type: "error", duration: 2000});
+                }
             });
           } else {
             console.log('error submit!!');

@@ -81,7 +81,7 @@
         this.$refs.ruleForm.validateField("username", (err) => {
           if (!err) {
             // 发送短信验证码
-            Request.get("/SMS", {params: {mobile: mobile}}).then(() => {
+            Request.get(`/signup/sendCode/${mobile}`, {}).then(() => {
               let countdown = 60; // 倒计时
               this.btnValue = `${countdown}s后可重新获取`;
               var timerId = window.setInterval(() => {
@@ -105,12 +105,12 @@
       handleSubmit(ev) {
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            var params = {mobile: this.ruleForm.username, loginpassword: this.ruleForm.password,
-              checkcode: this.ruleForm.valcode};
-            Request.post("/resetPasswordsubmit", params).then((result) => { console.log(result)
+            var params = {mobile: this.ruleForm.username, password: this.ruleForm.password,
+              code: this.ruleForm.valcode};
+            Request.post("/resetPassword", params).then((result) => {
               if (result.code == 200) {
                 this.$message({message: "修改成功", type: "success", duration: 2000, onClose: () => {
-                  window.location.href = Utils.getUrlQueryParam("redirect") || ("/login?u=" + params.mobile);
+                //   window.location.href = Utils.getUrlQueryParam("redirect") || ("/login?u=" + params.mobile);
                 }});
               }
               else 

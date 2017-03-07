@@ -105,6 +105,7 @@ class UserService {
             where: {
                 id: user.id
             },
+            validate:false,
             fields: [
                 "password"
             ]

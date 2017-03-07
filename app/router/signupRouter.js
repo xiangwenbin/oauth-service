@@ -15,6 +15,53 @@ SignUpRouter.get('/signup', async(ctx, next) => {
 
 });
 
+
+/**
+ * 重置密码页
+ */
+SignUpRouter.get('/resetPassword', async(ctx, next) => {
+    await ctx.render("pages/resetPassword");
+});
+
+
+
+/**
+ * 重置密码异步接口
+ */
+SignUpRouter.post('/resetPassword', async(ctx, next) => {
+    let { mobile, password, code } = ctx.request.body;
+    // console.log(body);
+
+    console.log(mobile, password, code);
+    //校验手机号唯一性
+    let user = await UserService.getUserByMobile(mobile).then((result) => {
+        if (!result) {
+            ctx.throw(400, "该手机号未注册");
+        } else {
+            
+            return result.set("password",password,{plain:true});
+        }
+    });
+
+    //校验验证码
+    let smsResult = await SMSService.valCode(mobile, code).then((result) => {
+        console.log(result);
+        if (result.code == 200) {
+            return true;
+        } else {
+            ctx.throw(result.code, result.msg);
+        }
+    }).catch((error)=>{
+       console.log("error:", error);
+    });
+    console.log(user.get({plain:true}));
+    let result = await UserService.updatePassword(user.get({plain:true})).then((result) => {
+        return result;
+    });
+
+    return ctx.body = JSON.stringify(Util.getSuccJsonResult(result));
+
+});
 /**
  * 手机号注册请求
  */
@@ -64,7 +111,7 @@ SignUpRouter.post('/signup/mobile', async(ctx, next) => {
  */
 SignUpRouter.get('/signup/sendCode/:mobile', async(ctx, next) => {
     let mobile = ctx.params.mobile;
-    console.log(mobile);
+    // console.log(mobile);
     let result = await SMSService.sendCode(mobile).then((result) => {
         console.log(result);
         return result;

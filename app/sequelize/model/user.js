@@ -36,6 +36,7 @@ var User = sequelize.define('User', {
     validate: {
         neigtherNull: function() {
             if (!this.username && !this.email && !this.mobile) {
+                console.log(this.username,this.email,this.mobile);
                 throw new Error('数据异常')
             }
         }
