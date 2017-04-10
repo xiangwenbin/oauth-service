@@ -18,6 +18,12 @@ TestRouter.get('/getTest', async(ctx, next) => {
     // ctx.body = "getTest body";
 });
 
+TestRouter.all('/ajax/community/:proxyPath+', async(ctx, next) => {
+    let querystring=ctx.querystring?`?${ctx.querystring}`:'';
+     ctx.body=`${ctx.params.proxyPath}${querystring}`;
+    // ctx.body = "getTest body";
+});
+
 TestRouter.get('/test/user/:id', async(ctx, next) => {
 
     var result = await UserService.getUserById(ctx.params.id).then((user) => {
